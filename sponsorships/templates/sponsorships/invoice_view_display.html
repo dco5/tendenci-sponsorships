@@ -1,0 +1,18 @@
+{% load base_filters %}
+{% load i18n %}
+
+<td>
+<td>
+    {% if obj %}
+    {% trans 'Sponsorship #' %}
+    <a href="{% url 'donation.view' obj.id %}" title="{% trans 'View Sponsorship' %}">
+        {{ obj.id }}
+    </a> from {{ obj.first_name }} {{ obj.last_name}} ({{ obj.email }})
+    {% else %}
+        {% trans 'Sponsorship information not available' %}
+    {% endif%}
+</td>
+<td class="td-right">
+    {{ invoice.total|format_currency }}
+</td>
+

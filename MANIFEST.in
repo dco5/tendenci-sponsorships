@@ -1,0 +1,4 @@
+include README.md
+include sponsorships/settings.json
+recursive-include sponsorships/static *
+recursive-include sponsorships/templates *

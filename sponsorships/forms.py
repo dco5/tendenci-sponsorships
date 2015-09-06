@@ -80,7 +80,7 @@ class SponsorshipForm(forms.ModelForm):
     allocation = forms.ChoiceField()
 
     class Meta:
-        model = SponsorshipAdminForm
+        model = Sponsorship
         fields = ('sponsorship_amount',
                   'payment_method',
                   'first_name',

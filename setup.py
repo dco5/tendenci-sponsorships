@@ -13,7 +13,7 @@ setup(
     license='GPL3',
     description='Sponsorships addon for Tendenci',
     long_description=longdesc,
-    url='https://github.com/tendenci/tendenci-sponsorships',
+    url='https://github.com/dco5/tendenci-sponsorships',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',

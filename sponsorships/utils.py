@@ -17,7 +17,7 @@ def sponsorship_inv_add(user, sponsorship, **kwargs):
     inv.bill_to_city = sponsorship.city
     inv.bill_to_state = sponsorship.state
     inv.bill_to_zip_code = sponsorship.zip_code
-    inv.bill_to_country = sponsorship.country
+    inv.bill_to_country = "US"
     inv.bill_to_phone = sponsorship.phone
     inv.bill_to_email = sponsorship.email
     inv.ship_to = sponsorship.first_name + ' ' + sponsorship.last_name
@@ -28,7 +28,7 @@ def sponsorship_inv_add(user, sponsorship, **kwargs):
     inv.ship_to_city = sponsorship.city
     inv.ship_to_state = sponsorship.state
     inv.ship_to_zip_code = sponsorship.zip_code
-    inv.ship_to_country = sponsorship.country
+    inv.ship_to_country = "US"
     inv.ship_to_phone = sponsorship.phone
     # self.ship_to_fax = make_payment.fax
     inv.ship_to_email = sponsorship.email

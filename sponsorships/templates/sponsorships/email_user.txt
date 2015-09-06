@@ -14,29 +14,37 @@
 	{{ sponsorship.first_name }} {{ sponsorship.last_name }},
 	</font></p>
 
-	<p><font face="Arial, Helvetica, sans-serif" size="2">
-	{{ SITE_GLOBAL_SITEDISPLAYNAME }} thanks you for your sponsorship of
-	{% if sponsorship.allocation %} 
-		{{ sponsorship.sponsorship_amount|format_currency }} to be allocated to {{ sponsorship.allocation }}.
-	{% else %}
-		{{ sponsorship.sponsorship_amount|format_currency }}.
-	{% endif %}
-	This e-mail does not confirm payment approval.
-	</font></p>
+	<p>
+        <font face="Arial, Helvetica, sans-serif" size="2">
+            {{ SITE_GLOBAL_SITEDISPLAYNAME }} thanks you for your sponsorship of
+            {% if sponsorship.allocation %}
+                {{ sponsorship.sponsorship_amount|format_currency }} to be allocated to {{ sponsorship.allocation }}.
+            {% else %}
+                {{ sponsorship.sponsorship_amount|format_currency }}.
+            {% endif %}
+            This e-mail does not confirm payment approval.
+        </font>
+	</p>
 
-	<p><font face="Arial, Helvetica, sans-serif" size="2">
-	To check the status of your payment, click here:  
-	<a href="{{ SITE_GLOBAL_SITEURL }}{% url "invoice.view" invoice.id invoice.guid %}">{{ SITE_GLOBAL_SITEURL }}{% url "invoice.view" invoice.id invoice.guid %}</a>					
-	</font></p>
+	<p>
+        <font face="Arial, Helvetica, sans-serif" size="2">
+            To check the status of your payment, click here:
+            <a href="{{ SITE_GLOBAL_SITEURL }}{% url "invoice.view" invoice.id invoice.guid %}">{{ SITE_GLOBAL_SITEURL }}{% url "invoice.view" invoice.id invoice.guid %}</a>
+        </font>
+	</p>
 
 	<p><font face="Arial, Helvetica, sans-serif" size="2" color="red">
 	*** Important Note: this is your private link, please DO NOT share it with anybody publicly.		
 	</font></p>
 	
-	<p><font face="Arial, Helvetica, sans-serif" size="2">
-	To view and print your receipt, click here, 
-	<a href="{{ SITE_GLOBAL_SITEURL }}{% url "sponsorship.receipt" sponsorship.id sponsorship.guid %}">{{ SITE_GLOBAL_SITEURL }}{% url "sponsorship.receipt" sponsorship.id sponsorship.guid %}</a>					
-	</font></p>
+	<p>
+        <font face="Arial, Helvetica, sans-serif" size="2">
+            To view and print your receipt, click here,
+            <a href="{{ SITE_GLOBAL_SITEURL }}{% url "sponsorship.receipt" sponsorship.id sponsorship.guid %}">
+                {{ SITE_GLOBAL_SITEURL }}{% url "sponsorship.receipt" sponsorship.id sponsorship.guid %}
+            </a>
+        </font>
+    </p>
 
 </body>
 </html>

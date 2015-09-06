@@ -34,13 +34,13 @@
 
                     <li class="content-item">
                         <span class="app-name">
-                            <a href="{% url 'sponsorships.search' %}">{% trans 'Search' %}</a>
+                            <a href="{% url 'sponsorship.search' %}">{% trans 'Search' %}</a>
                         </span>
                     </li>
 
                     <li class="content-item">
                         <span class="app-name">
-                            <a href="{% url 'sponsorships.add' %}">{% trans "Add sponsorship" %}</a>
+                            <a href="{% url 'sponsorship.add' %}">{% trans "Add sponsorship" %}</a>
                         </span>
                     </li>
 
@@ -56,7 +56,7 @@
                             {% if can_view_sponsorship %}
                                 <li class="content-item">
                                     <span class="app-name">
-                                        <a href="{% url 'sponsorships.view' app_object.id %}">{% trans 'View' %}</a>
+                                        <a href="{% url 'sponsorship.view' app_object.id %}">{% trans 'View' %}</a>
                                     </span>
                                 </li>
                             {% endif %}

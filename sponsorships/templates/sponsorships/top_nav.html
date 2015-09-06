@@ -1,7 +1,7 @@
 {% extends 'top_menu/admin_top-new.html' %}
 {% load i18n %}
 {% load static from staticfiles %}
-{% load donation_tags %}
+{% load sponsorship_tags %}
 
 
 {% block current_app %}
@@ -10,10 +10,10 @@
         <img class="nav-icon" src="{% static 'famfamfam/icons/money.png' %}"/>{% trans 'Donations' %}
     </a>
 
-    {% if donation %}
-        {% donation_current_app request.user donation %}
+    {% if sponsorship %}
+        {% sponsorship_current_app request.user sponsorship %}
     {% else %}
-        {% donation_current_app request.user %}
+        {% sponsorship_current_app request.user %}
     {% endif %}
 </li>
 {% endblock %}

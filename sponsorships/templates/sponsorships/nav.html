@@ -5,10 +5,10 @@
 {% has_perm user site_settings.change_setting as can_edit_setting %}
 
 {% if nav_object %}
-	{% has_perm user donations.view_donation nav_object as can_view_donation %}
+	{% has_perm user sponsorships.view_sponsorship nav_object as can_view_sponsorship %}
 {% else %}
-	{% has_perm user donations.view_donation as can_view_donation %}
-	{% has_perm user donations.change_donation as can_edit_donation %}
+	{% has_perm user sponsorships.view_sponsorship as can_view_sponsorship %}
+	{% has_perm user sponsorships.change_sponsorship as can_edit_sponsorship %}
 {% endif %}
 
 {% if not SITE_GLOBAL_HIDEALLTABS %}
@@ -25,29 +25,29 @@
 {% endif %}
 
 <li class="dropdown active" data-dropdown="dropdown">
-    <a href="#" class="dropdown-toggle">{% firstof MODULE_DONATIONS_LABEL 'Donations' %}</a>
+    <a href="#" class="dropdown-toggle">{% firstof MODULE_DONATIONS_LABEL 'Sponsorships' %}</a>
     {% if nav_object %}
     <div class="dropdown-menu">
     <ul class="first">
-        <li class="heading">{% trans "All Donations" %}</li>
+        <li class="heading">{% trans "All Sponsorships" %}</li>
         <li class="divider"></li>
     {% else %}
         <div>
         <ul class="dropdown-menu">
     {% endif %}
         {% if can_edit_setting %}
-            <li><a href="{% url "settings.index" "module" "donations" %}">{% trans "Settings" %}</a></li>
-            <li><a href="{% url "donation.search" %}">Search</a></li>
-            <li><a href="{% url "donation.add" %}">Add</a></li>
+            <li><a href="{% url "settings.index" "module" "sponsorships" %}">{% trans "Settings" %}</a></li>
+            <li><a href="{% url "sponsorship.search" %}">Search</a></li>
+            <li><a href="{% url "sponsorship.add" %}">Add</a></li>
         {% endif %}
     </ul>
     {% if nav_object %}
         {% if can_view_page or can_edit_page %}
         <ul>
-            <li class="heading">{% trans "This Donation" %}</li>
+            <li class="heading">{% trans "This Sponsorship" %}</li>
             <li class="divider"></li>
-            {% if can_view_donation %}
-            <li><a href="{% url "donation.view" nav_object.id %}">View</a></li>
+            {% if can_view_sponsorship %}
+            <li><a href="{% url "sponsorship.view" nav_object.id %}">View</a></li>
             {% endif %}
         </ul>
         {% endif %}

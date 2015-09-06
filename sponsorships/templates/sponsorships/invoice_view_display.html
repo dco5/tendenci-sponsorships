@@ -5,7 +5,7 @@
 <td>
     {% if obj %}
     {% trans 'Sponsorship #' %}
-    <a href="{% url 'donation.view' obj.id %}" title="{% trans 'View Sponsorship' %}">
+    <a href="{% url 'sponsorship.view' obj.id %}" title="{% trans 'View Sponsorship' %}">
         {{ obj.id }}
     </a> from {{ obj.first_name }} {{ obj.last_name}} ({{ obj.email }})
     {% else %}

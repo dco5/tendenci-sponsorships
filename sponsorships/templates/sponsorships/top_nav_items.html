@@ -6,10 +6,10 @@
 {% has_perm user site_settings.change_setting as can_edit_setting %}
 
 {% if app_object %}
-    {% has_perm user donations.view_donation app_object as can_view_donation %}
+    {% has_perm user sponsorships.view_sponsorship app_object as can_view_sponsorship %}
 {% else %}
-    {% has_perm user donations.view_donation as can_view_donation %}
-    {% has_perm user donations.change_donation as can_edit_donation %}
+    {% has_perm user sponsorships.view_sponsorship as can_view_sponsorship %}
+    {% has_perm user sponsorships.change_sponsorship as can_edit_sponsorship %}
 {% endif %}
 
 
@@ -20,43 +20,43 @@
                 <ul class="list-unstyled content-dropdown-col col-sm-6 col-xs-12">
                     {% if app_object %}
                         <li>
-                            <span class="content-head text-content-head">{% trans 'All Donations' %}</span>
+                            <span class="content-head text-content-head">{% trans 'All Sponsorships' %}</span>
                         </li>
                     {% endif %}
 
                     {% if can_edit_setting %}
                         <li class="content-item">
                             <span class="app-name">
-                                <a href="{% url 'settings.index' 'module' 'donations' %}">{% trans "Settings" %}</a>
+                                <a href="{% url 'settings.index' 'module' 'sponsorships' %}">{% trans "Settings" %}</a>
                             </span>
                         </li>
                     {% endif %}
 
                     <li class="content-item">
                         <span class="app-name">
-                            <a href="{% url 'donation.search' %}">{% trans 'Search' %}</a>
+                            <a href="{% url 'sponsorship.search' %}">{% trans 'Search' %}</a>
                         </span>
                     </li>
 
                     <li class="content-item">
                         <span class="app-name">
-                            <a href="{% url 'donation.add' %}">{% trans "Add donation" %}</a>
+                            <a href="{% url 'sponsorship.add' %}">{% trans "Add sponsorship" %}</a>
                         </span>
                     </li>
 
                 </ul>
 
                 {% if app_object %}
-                    {% if can_view_donation or can_edit_donation %}
+                    {% if can_view_sponsorship or can_edit_sponsorship %}
                         <ul class="list-unstyled content-dropdown-col col-sm-6 col-xs-12">
                             <li>
-                                <span class="content-head text-content-head">{% trans "This donation" %}</span>
+                                <span class="content-head text-content-head">{% trans "This sponsorship" %}</span>
                             </li>
 
-                            {% if can_view_donation %}
+                            {% if can_view_sponsorship %}
                                 <li class="content-item">
                                     <span class="app-name">
-                                        <a href="{% url 'donation.view' app_object.id %}">{% trans 'View' %}</a>
+                                        <a href="{% url 'sponsorship.view' app_object.id %}">{% trans 'View' %}</a>
                                     </span>
                                 </li>
                             {% endif %}

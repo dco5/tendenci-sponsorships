@@ -1,4 +1,4 @@
-{{ object.donation_amount }} 
+{{ object.sponsorship_amount }}
 {{ object.payment_method }} 
 {{ object.allocation }} 
 {{ object.first_name }} 

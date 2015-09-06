@@ -11,13 +11,13 @@
             {% if SITE_GLOBAL_SHOWANCIENTMENU %}
                 {% include "top_menu/user_top.html" %}
             {% else %}
-                {% include "donations/top_nav.html" %}
+                {% include "sponsorships/top_nav.html" %}
             {% endif %}
         {% else %}
             {% if SITE_GLOBAL_SHOWANCIENTMENU %}
                 {% include "top_menu/admin_top.html" %}
             {% else %}
-                {% include "donations/top_nav.html" %}
+                {% include "sponsorships/top_nav.html" %}
             {% endif %}
             {% if request.session.theme %}
                 {% include "themes/theme_top.html" %}
@@ -27,7 +27,7 @@
         {% if SITE_GLOBAL_SHOWANCIENTMENU %}
             {% include "top_menu/user_top.html" %}
         {% else %}
-            {% include "donations/top_nav.html" %}
+            {% include "sponsorships/top_nav.html" %}
         {% endif %}
     {% endif %}
 {% endif %}

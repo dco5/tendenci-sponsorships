@@ -11,15 +11,15 @@
 <body bgcolor="#ffffff" text="#000000">
 
 	<p><font face="Arial, Helvetica, sans-serif" size="2">
-	{{ donation.first_name }} {{ donation.last_name }},
+	{{ sponsorship.first_name }} {{ sponsorship.last_name }},
 	</font></p>
 
 	<p><font face="Arial, Helvetica, sans-serif" size="2">
 	{{ SITE_GLOBAL_SITEDISPLAYNAME }} thanks you for your sponsorship of
-	{% if donation.allocation %} 
-		{{ donation.donation_amount|format_currency }} to be allocated to {{ donation.allocation }}.
+	{% if sponsorship.allocation %} 
+		{{ sponsorship.sponsorship_amount|format_currency }} to be allocated to {{ sponsorship.allocation }}.
 	{% else %}
-		{{ donation.donation_amount|format_currency }}.
+		{{ sponsorship.sponsorship_amount|format_currency }}.
 	{% endif %}
 	This e-mail does not confirm payment approval.
 	</font></p>
@@ -35,7 +35,7 @@
 	
 	<p><font face="Arial, Helvetica, sans-serif" size="2">
 	To view and print your receipt, click here, 
-	<a href="{{ SITE_GLOBAL_SITEURL }}{% url "donation.receipt" donation.id donation.guid %}">{{ SITE_GLOBAL_SITEURL }}{% url "donation.receipt" donation.id donation.guid %}</a>					
+	<a href="{{ SITE_GLOBAL_SITEURL }}{% url "sponsorship.receipt" sponsorship.id sponsorship.guid %}">{{ SITE_GLOBAL_SITEURL }}{% url "sponsorship.receipt" sponsorship.id sponsorship.guid %}</a>					
 	</font></p>
 
 </body>

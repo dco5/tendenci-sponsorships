@@ -10,8 +10,8 @@ class SponsorshipRegistry(AppRegistry):
     description = 'Allow sponsorships from anyone'
 
     url = {
-        'add': lazy_reverse('donation.add'),
-        'search': lazy_reverse('donation.search'),
+        'add': lazy_reverse('sponsorship.add'),
+        'search': lazy_reverse('sponsorship.search'),
     }
 
 site.register(Sponsorship, SponsorshipRegistry)

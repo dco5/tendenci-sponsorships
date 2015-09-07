@@ -12,58 +12,72 @@
 {% block meta_keywords %}{{ block.super }}{% endblock %}
 
 {% block extra_head %}
-{{ block.super }}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/sponsorships.css">
+    {{ block.super }}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/sponsorships.css">
 {% endblock %}
 
 {% block content %}
-<div class="t">
-    <h1>{% firstof MODULE_DONATIONS_LABEL trans 'Sponsorships' %} {% trans 'Search' %}</h1>
+    <div class="t">
+        <h1>Search Sponsorship</h1>
 
-	{% sponsorship_search %}
-    {% autopaginate sponsorships 10 %}
+        {% sponsorship_search %}
+        {% autopaginate sponsorships 10 %}
 
-	<div class="sponsorships-wrap">
-    {% for sponsorship in sponsorships %}
-		{% with sponsorship|get_object as sponsorship %}
-    	{% has_perm user sponsorships.view_sponsorship sponsorship as can_view %}
-    	{% if can_view %}
-		<div class="sponsorship-wrap-search">
+        <div class="sponsorships-wrap">
+            {% for sponsorship in sponsorships %}
+                {% with sponsorship|get_object as sponsorship %}
+                    {% has_perm user sponsorships.view_sponsorship sponsorship as can_view %}
+                    {% if can_view %}
+                        <div class="sponsorship-wrap-search">
 
-            <h2><a href="{% url 'sponsorship.view' sponsorship.id %}">{{ sponsorship.first_name}} {{ sponsorship.last_name }}</a></h2>
-            {% if sponsorship.user %}
-            	<div class="sponsorship-item-left"><a href="{% url 'profile' sponsorship.user.username %}">{% avatar sponsorship.user 56 %}</a></div>
-            {% endif %}
-            <div class="sponsorship-item-right">
-	            <div class="content">{% trans 'Invoice:' %}
-	            {% if sponsorship.invoice %}
-	            	<a href="{% url 'invoice.view' sponsorship.invoice.id %}">{{ sponsorship.invoice.id }}</a>
-	            {% else %}
-	            	n/a
-	            {% endif %}
-	            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	            {% trans 'Amount:' %} <b>{{ sponsorship.sponsorship_amount|format_currency }}</b>
-	            </div>
+                            <h2>
+                                <a href="{% url 'sponsorship.view' sponsorship.id %}">{{ sponsorship.first_name }} {{ sponsorship.last_name }}</a>
+                                {% if sponsorship.company %}
+                                    <small>{{ sponsorship.company }}</small>
+                                {% endif %}
+                            </h2>
+                            {% if sponsorship.user %}
+                                <div class="sponsorship-item-left">
+                                    <a href="{% url 'profile' sponsorship.user.username %}">{% avatar sponsorship.user 56 %}</a>
+                                </div>
+                            {% endif %}
+                            <div class="sponsorship-item-right">
+                                {% if sponsorship.invoice %}
+                                    <div class="float-right">
+                                        <a class="btn btn-success"
+                                           href="{% url 'invoice.view' sponsorship.invoice.id %}">View Invoice</a>
+                                    </div>
+                                {% endif %}
+                                <div class="content">{% trans 'Invoice:' %}
+                                    {% if sponsorship.invoice %}
+                                        <a href="{% url 'invoice.view' sponsorship.invoice.id %}">{{ sponsorship.invoice.id }}</a>
+                                    {% else %}
+                                        n/a
+                                    {% endif %}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    {% trans 'Amount:' %} <b>{{ sponsorship.sponsorship_amount|format_currency }}</b>
+                                </div>
 
-				{% if sponsorship.allocation %}
-					<div class="content">{% trans 'Donate to:' %} {{ sponsorship.allocation }}</div>
-				{% endif %}
-				<div class="content">{% trans 'Payment Method:' %} {{ sponsorship.payment_method }}</div>
-			</div>
-			<div class="clear-left"></div>
-			<div class="meta">
-            	<div class="submitted">{% trans 'Created:' %} {{ sponsorship.create_dt|date:"long" }}</div>
-            </div>
-		</div>
-		{% endif %}
-		{% endwith %}
-	{% empty %}
-		<div>{% trans '0 Results Found' %}</div>
-    {% endfor %}
-	</div>
+                                {% if sponsorship.allocation %}
+                                    <div class="content">{% trans 'Sponsored: ' %} {{ sponsorship.allocation }}</div>
+                                {% endif %}
+                                <div class="content">{% trans 'Payment Method:' %} {{ sponsorship.payment_method }}</div>
+                            </div>
 
-    {% paginate %}
-</div>
+                            <div class="clear-left"></div>
+                            <div class="meta">
+                                <div class="submitted">{% trans 'Created:' %} {{ sponsorship.create_dt|date:"long" }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            {% empty %}
+                <div>{% trans '0 Results Found' %}</div>
+            {% endfor %}
+        </div>
+
+        {% paginate %}
+    </div>
 {% endblock %}
 

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from tendenci.apps.invoices.models import Invoice
 from sponsorships.managers import SponsorshipManager
+from tendenci.apps.events.models import Event
 
 class Sponsorship(models.Model):
     guid = models.CharField(max_length=50)
@@ -31,6 +32,8 @@ class Sponsorship(models.Model):
     owner_username = models.CharField(max_length=50, null=True)
     status_detail = models.CharField(max_length=50, default='estimate')
     status = models.NullBooleanField(default=True)
+
+    event = models.ForeignKey(Event, blank=True, null=True)
 
     objects = SponsorshipManager()
     

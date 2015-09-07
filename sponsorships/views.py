@@ -23,11 +23,11 @@ except:
     notification = None
 
 
-def add(request, form_class=SponsorshipForm, template_name="sponsorships/add.html"):
+def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorships/add.html"):
     use_captcha = get_setting('site', 'global', 'captcha')
 
     if request.method == "POST":
-        form = form_class(request.POST, user=request.user)
+        form = form_class(request.POST, user=request.user, event_id=id)
         captcha_form = CaptchaForm(request.POST)
         if not use_captcha:
             del captcha_form.fields['captcha']
@@ -122,7 +122,7 @@ def add(request, form_class=SponsorshipForm, template_name="sponsorships/add.htm
             else:
                 return HttpResponseRedirect(reverse('sponsorship.add_confirm', args=[sponsorship.id]))
     else:
-        form = form_class(user=request.user)
+        form = form_class(user=request.user, event_id=id)
         captcha_form = CaptchaForm()
 
 

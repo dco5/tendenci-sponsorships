@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from sponsorships.models import Sponsorship
-from sponsorships.utils import get_allocation_choices, get_payment_method_choices, get_preset_amount_choices
+from sponsorships.utils import get_allocation_choices, get_payment_method_choices, get_preset_amount_choices, get_initial_choice
 from tendenci.apps.site_settings.utils import get_setting
 
 class SponsorshipAdminForm(forms.ModelForm):
@@ -104,6 +104,12 @@ class SponsorshipForm(forms.ModelForm):
             self.user = kwargs.pop('user', None)
         else:
             self.user = None
+
+        if 'event' in kwargs:
+            self.event_id = kwargs.pop('event', None)
+        else:
+            self.event_id = None
+
         super(SponsorshipForm, self).__init__(*args, **kwargs)
         # populate the user fields
         if self.user and self.user.id:
@@ -127,7 +133,11 @@ class SponsorshipForm(forms.ModelForm):
 
         # allocation_str = get_setting('module', 'sponsorships', 'sponsorshipsallocations')
 
-        self.fields['allocation'].choices = get_allocation_choices(self.user, "")
+        self.fields['allocation'].choices = get_allocation_choices(self.user)
+
+        if self.event_id:
+            self.fields['allocation'].initial = get_initial_choice(self.event_id)
+
         # if allocation_str:
         #     self.fields['allocation'].choices = get_allocation_choices(self.user, allocation_str)
         # else:

@@ -94,15 +94,11 @@ def get_payment_method_choices(user):
         #
 
 
-def get_allocation_choices(user, allocation_str):
+def get_allocation_choices(user):
     # allocation_str = get_setting('module', 'sponsorships', 'sponsorshipsallocations')
     events = Event.objects.filter(start_dt__gte=datetime.today())
     if events:
-        allocation_list = [event.title.strip() for event in events]
-        allocation_list = [item.strip() for item in allocation_list]
-        allocation_list.append("General Sponsorship")
-
-        return [(item, item) for item in allocation_list]
+        return [(event.pk, event.title.strip() ) for event in events]
 
     # if allocation_str:
     #     allocation_list = allocation_str.split(',')
@@ -111,6 +107,18 @@ def get_allocation_choices(user, allocation_str):
     #     return [(item, item) for item in allocation_list]
     else:
         return (("General Sponsorship", "General Sponsorship"),)
+
+
+def get_initial_choice(event_id):
+    try:
+        event = Event.objects.get(pk=event_id)
+    except Event.DoesNotExist:
+        event = None
+
+    if event and event.start_dt >= datetime.today():
+        return event.pk
+    else:
+        return ""
 
 
 def get_preset_amount_choices(preset_amount_str):

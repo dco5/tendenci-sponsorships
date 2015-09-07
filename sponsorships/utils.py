@@ -5,7 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 from tendenci.apps.invoices.models import Invoice
 from tendenci.apps.events.models import Event
 from tendenci.apps.site_settings.utils import get_setting
-import datetime
 
 
 def sponsorship_inv_add(user, sponsorship, **kwargs):
@@ -62,10 +61,10 @@ def sponsorship_email_user(request, sponsorship, invoice, **kwargs):
     from django.template import RequestContext
 
     subject = render_to_string('sponsorships/email_user_subject.txt',
-                               {'sponsorships': sponsorship},
+                               {'sponsorship': sponsorship},
                                context_instance=RequestContext(request))
     body = render_to_string('sponsorships/email_user.txt',
-                            {'sponsorships': sponsorship, 'invoice': invoice},
+                            {'sponsorship': sponsorship, 'invoice': invoice},
                             context_instance=RequestContext(request))
 
     sender = settings.DEFAULT_FROM_EMAIL
@@ -97,7 +96,7 @@ def get_payment_method_choices(user):
 
 def get_allocation_choices(user, allocation_str):
     # allocation_str = get_setting('module', 'sponsorships', 'sponsorshipsallocations')
-    events = Event.objects.filter(start_dt__gte=datetime.datetime.today())
+    events = Event.objects.filter(start_dt__gte=datetime.today())
     if events:
         allocation_list = [event.title.strip() for event in events]
         allocation_list = [item.strip() for item in allocation_list]

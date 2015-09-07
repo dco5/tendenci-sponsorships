@@ -12,14 +12,14 @@
 
 {% block content %}
 <div class="t">
-    <h1>{% trans 'View a Sponsorship' %}</h1>
+    <h1>{% trans 'View Sponsorships' %}</h1>
 
     <div class="sponsorship-view">
         <div class="label">{% trans 'Sponsorship Amount' %}:</div>
         <div><b>{{ sponsorship.sponsorship_amount }}</b></div>
         <div class="clear-left"></div>
         {% if sponsorship.allocation %}
-        <div class="label">{% trans 'Allocated to' %}:</div>
+        <div class="label">{% trans 'Event Sponsored' %}:</div>
         <div>{{sponsorship.allocation }}</div>
         <div class="clear-left"></div>
         {% endif %}

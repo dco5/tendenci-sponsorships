@@ -40,8 +40,8 @@
 	<p>
         <font face="Arial, Helvetica, sans-serif" size="2">
             To view and print your receipt, click here,
-            <a href="{{ SITE_GLOBAL_SITEURL }}{% url "sponsorship.receipt" sponsorship.id sponsorship.guid %}">
-                {{ SITE_GLOBAL_SITEURL }}{% url "sponsorship.receipt" sponsorship.id sponsorship.guid %}
+            <a href="{{ SITE_GLOBAL_SITEURL }}{% url 'sponsorship.receipt' sponsorship.id sponsorship.guid %}">
+                {{ SITE_GLOBAL_SITEURL }}{% url 'sponsorship.receipt' sponsorship.id sponsorship.guid %}
             </a>
         </font>
     </p>

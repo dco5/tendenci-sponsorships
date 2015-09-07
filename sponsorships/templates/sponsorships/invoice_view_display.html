@@ -2,12 +2,14 @@
 {% load i18n %}
 
 <td>
-<td>
     {% if obj %}
-    {% trans 'Sponsorship #' %}
-    <a href="{% url 'sponsorship.view' obj.id %}" title="{% trans 'View Sponsorship' %}">
-        {{ obj.id }}
-    </a> from {{ obj.first_name }} {{ obj.last_name}} ({{ obj.email }})
+        {% trans 'Sponsorship for' %} {{ obj.allocation }} <br>
+        From: {{ obj.first_name }} {{ obj.last_name}} <br>
+        Email: {{ obj.email }}
+        {% if obj.company %}
+            <br>
+            Company: {{ obj.company }}
+        {% endif %}
     {% else %}
         {% trans 'Sponsorship information not available' %}
     {% endif%}

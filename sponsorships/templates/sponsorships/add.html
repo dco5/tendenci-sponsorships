@@ -13,9 +13,9 @@
 <div class="t">
 <div class="sponsorship-add">
 
-<h1>{% trans 'Make a Sponsorship' %}</h1>
+<h1>{% trans 'Sponsor an Event' %}</h1>
 {% blocktrans %}
-<p>Complete the form below to make a sponsorship.
+<p>Complete the form below to sponsor an event.
 The required fields are marked with <em class="body-copy-alert">*</em>. <br />Thank You!</p>
 {% endblocktrans %}
 <br />
@@ -52,7 +52,7 @@ The required fields are marked with <em class="body-copy-alert">*</em>. <br />Th
             <div class="errs">{{ form.form.allocation.errors }}</div>
         {% endif %}
         <label for="id_form.allocation" class="field-label">
-        {% trans 'Sponsor '%}</label>
+        {% trans 'Event to Sponsor '%}</label>
         {{ form.allocation }}
     </div>
     <div class="clear-left"></div>
@@ -136,15 +136,6 @@ The required fields are marked with <em class="body-copy-alert">*</em>. <br />Th
     /<label for="id_zip_code">{% trans 'Zip Code'%}</label>
     </div>
     {{ form.city }} / {{ form.state }} / {{ form.zip_code }}
-</div>
-<div class="clear-left"></div>
-
-<div class="field-wrapper">
-    {% if form.country.errors %}
-        <div class="errs">{{ form.country.errors }}</div>
-    {% endif %}
-    <label for="id_country" class="field-label">{% trans 'Country'%}</label>
-    {{ form.country }}
 </div>
 <div class="clear-left"></div>
 

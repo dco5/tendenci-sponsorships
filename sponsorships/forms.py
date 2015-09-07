@@ -124,14 +124,17 @@ class SponsorshipForm(forms.ModelForm):
                 pass
 
         self.fields['payment_method'].widget = forms.RadioSelect(choices=get_payment_method_choices(self.user))
-        allocation_str = get_setting('module', 'sponsorships', 'sponsorshipsallocations')
-        if allocation_str:
-            self.fields['allocation'].choices = get_allocation_choices(self.user, allocation_str)
-        else:
-            del self.fields['allocation']
-        preset_amount_str = (get_setting('module', 'sponsorships', 'sponsorshipspresetamounts')).strip('')
-        if preset_amount_str:
-            self.fields['sponsorship_amount'] = forms.ChoiceField(choices=get_preset_amount_choices(preset_amount_str))
+
+        # allocation_str = get_setting('module', 'sponsorships', 'sponsorshipsallocations')
+
+        self.fields['allocation'].choices = get_allocation_choices(self.user, "")
+        # if allocation_str:
+        #     self.fields['allocation'].choices = get_allocation_choices(self.user, allocation_str)
+        # else:
+        #     del self.fields['allocation']
+        # preset_amount_str = (get_setting('module', 'sponsorships', 'sponsorshipspresetamounts')).strip('')
+        # if preset_amount_str:
+        #     self.fields['sponsorship_amount'] = forms.ChoiceField(choices=get_preset_amount_choices(preset_amount_str))
 
 
     def clean_sponsorship_amount(self):

@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.auth.models import User
 from sponsorships.forms import SponsorshipForm
-from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user
+from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user, sponsorship_event_add
 from sponsorships.models import Sponsorship
 from tendenci.apps.site_settings.utils import get_setting
 from tendenci.apps.base.forms import CaptchaForm
@@ -86,6 +86,10 @@ def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorship
 
             # create invoice
             invoice = sponsorship_inv_add(user, sponsorship)
+
+            # looks for the event an adds it to the sponsorship
+            event = sponsorship_event_add(sponsorship.allocation, sponsorship)
+
             # updated the invoice_id for mp, so save again
             sponsorship.save(user)
 

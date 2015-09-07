@@ -53,6 +53,26 @@ def sponsorship_inv_add(user, sponsorship, **kwargs):
 
     return inv
 
+def sponsorship_event_add(allocation, sponsorship):
+    # allocation contains the value of the id of the event
+    # General Sponsorship means there are no events avaiable to sponsor
+    if allocation == "General Sponsorship":
+        return None
+
+    try:
+        event = Event.objects.get(pk=allocation)
+    except Event.DoesNotExist:
+        event = None
+
+    if event:
+        sponsorship.allocation = event.title.strip()
+    else:
+        sponsorship.allocation = "General Sponsorship"
+
+    sponsorship.event = event
+
+    return event
+
 
 def sponsorship_email_user(request, sponsorship, invoice, **kwargs):
     from django.core.mail.message import EmailMessage

@@ -105,8 +105,8 @@ class SponsorshipForm(forms.ModelForm):
         else:
             self.user = None
 
-        if 'event' in kwargs:
-            self.event_id = kwargs.pop('event', None)
+        if 'event_id' in kwargs:
+            self.event_id = kwargs.pop('event_id', None)
         else:
             self.event_id = None
 

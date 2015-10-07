@@ -1,0 +1,18 @@
+{% extends "sponsorships/base.html" %}
+{% load i18n %}
+{% load sponsorship_tags %}
+{% load base_filters %}
+
+{% block title %}{% trans 'Event Sponsors' %}{% endblock %}
+
+{% block extra_head %}
+{{ block.super }}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/sponsorships.css">
+    <link rel="stylesheet" href="{{ THEME_URL }}media/custom.css">
+
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ event.title }}</h2>
+{% endblock %}

@@ -1,0 +1,17 @@
+*.pyc
+# Exclude . files
+*.
+.*
+
+# except for .gitignore
+!.gitignore
+
+# except for .tx
+!.tx/
+# except for .travis.yml
+!.travis.yml
+
+
+/*.egg-info
+/dist
+/build

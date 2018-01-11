@@ -7,6 +7,18 @@ from sponsorships.managers import SponsorshipManager
 from tendenci.apps.events.models import Event
 
 
+class SponsorshipLevel(models.Model):
+    event = models.ForeignKey(Event, related_name='sponsorship_levels')
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        # app_label = 'sponsorship_level'
+        verbose_name = 'Sponsorship Level'
+        verbose_name_plural = 'Sponsorship Levels'
+
+
 class Sponsorship(models.Model):
     guid = models.CharField(max_length=50)
     user = models.ForeignKey(User, null=True)
@@ -33,6 +45,8 @@ class Sponsorship(models.Model):
     owner_username = models.CharField(max_length=50, null=True)
     status_detail = models.CharField(max_length=50, default='estimate')
     status = models.NullBooleanField(default=True)
+
+    level = models.ForeignKey(SponsorshipLevel, blank=True, null=True, related_name='sponsorships')
 
     event = models.ForeignKey(Event, blank=True, null=True)
 

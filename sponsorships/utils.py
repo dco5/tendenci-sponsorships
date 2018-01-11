@@ -53,6 +53,7 @@ def sponsorship_inv_add(user, sponsorship, **kwargs):
 
     return inv
 
+
 def sponsorship_event_add(allocation, sponsorship):
     # allocation contains the value of the id of the event
     # General Sponsorship means there are no events avaiable to sponsor
@@ -118,7 +119,7 @@ def get_allocation_choices(user):
     # allocation_str = get_setting('module', 'sponsorships', 'sponsorshipsallocations')
     events = Event.objects.filter(start_dt__gte=datetime.today())
     if events:
-        return [(event.pk, event.title.strip() ) for event in events]
+        return [(event.pk, event.title.strip()) for event in events]
 
     # if allocation_str:
     #     allocation_list = allocation_str.split(',')

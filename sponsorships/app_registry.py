@@ -5,13 +5,14 @@ from sponsorships.models import Sponsorship
 
 class SponsorshipRegistry(AppRegistry):
     version = '1.0'
-    author = 'Schipul - The Web Marketing Company'
-    author_email = 'programmers@schipul.com'
+    author = 'Jaime Lossada'
+    author_email = 'jlosada87@hotmail.com'
     description = 'Allow sponsorships from anyone'
 
     url = {
         'add': lazy_reverse('sponsorship.add'),
         'search': lazy_reverse('sponsorship.search'),
     }
+
 
 site.register(Sponsorship, SponsorshipRegistry)

@@ -2,24 +2,27 @@ from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from sponsorships.models import Sponsorship
-from sponsorships.utils import get_allocation_choices, get_payment_method_choices, get_preset_amount_choices, get_initial_choice
+from sponsorships.utils import get_allocation_choices, get_payment_method_choices, get_preset_amount_choices, \
+    get_initial_choice
 from tendenci.apps.site_settings.utils import get_setting
+
 
 class SponsorshipAdminForm(forms.ModelForm):
     # get the payment_method choices from settings
     sponsorship_amount = forms.CharField(error_messages={'required': _('Please enter the sponsorships amount.')})
     payment_method = forms.CharField(error_messages={'required': _('Please select a payment method.')},
                                      widget=forms.RadioSelect(choices=(('check-paid', _('Paid by Check')),
-                                                              ('cc', _('Make Online Payment')),)), initial='cc', )
-    company = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'size':'30'}))
-    address = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'size':'35'}))
-    state = forms.CharField(max_length=50, required=False,  widget=forms.TextInput(attrs={'size':'5'}))
-    zip_code = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'size':'10'}))
-    referral_source = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'size':'40'}))
+                                                                       ('cc', _('Make Online Payment')),)),
+                                     initial='cc', )
+    company = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'size': '30'}))
+    address = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'size': '35'}))
+    state = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'size': '5'}))
+    zip_code = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'size': '10'}))
+    referral_source = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'size': '40'}))
     email = forms.EmailField(help_text=_('A valid e-mail address, please.'))
     email_receipt = forms.BooleanField(initial=True)
     comments = forms.CharField(max_length=1000, required=False,
-                               widget=forms.Textarea(attrs={'rows':'3'}))
+                               widget=forms.Textarea(attrs={'rows': '3'}))
     allocation = forms.ChoiceField()
 
     class Meta:
@@ -53,7 +56,6 @@ class SponsorshipAdminForm(forms.ModelForm):
         if preset_amount_str:
             self.fields['sponsorship_amount'] = forms.ChoiceField(choices=get_preset_amount_choices(preset_amount_str))
 
-
     def clean_sponsorship_amount(self):
         try:
             if float(self.cleaned_data['sponsorship_amount']) <= 0:
@@ -62,21 +64,23 @@ class SponsorshipAdminForm(forms.ModelForm):
             raise forms.ValidationError(_(u'Please enter a numeric positive number'))
         return self.cleaned_data['sponsorship_amount']
 
+
 class SponsorshipForm(forms.ModelForm):
     # get the payment_method choices from settings
     sponsorship_amount = forms.CharField(error_messages={'required': _('Please enter the sponsorships amount.')})
     payment_method = forms.CharField(error_messages={'required': _('Please select a payment method.')},
                                      widget=forms.RadioSelect(choices=(('check-paid', _('Paid by Check')),
-                                                              ('cc', _('Make Online Payment')),)), initial='cc', )
-    company = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'size':'30'}))
-    address = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'size':'35'}))
-    state = forms.CharField(max_length=50, required=False,  widget=forms.TextInput(attrs={'size':'5'}))
-    zip_code = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'size':'10'}))
-    referral_source = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'size':'40'}))
+                                                                       ('cc', _('Make Online Payment')),)),
+                                     initial='cc', )
+    company = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'size': '30'}))
+    address = forms.CharField(max_length=100, required=False, widget=forms.TextInput(attrs={'size': '35'}))
+    state = forms.CharField(max_length=50, required=False, widget=forms.TextInput(attrs={'size': '5'}))
+    zip_code = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'size': '10'}))
+    referral_source = forms.CharField(max_length=200, required=False, widget=forms.TextInput(attrs={'size': '40'}))
     email = forms.EmailField(help_text=_('A valid e-mail address, please.'))
     email_receipt = forms.BooleanField(initial=True, required=False)
     comments = forms.CharField(max_length=1000, required=False,
-                               widget=forms.Textarea(attrs={'rows':'3'}))
+                               widget=forms.Textarea(attrs={'rows': '3'}))
     allocation = forms.ChoiceField()
 
     class Meta:
@@ -146,9 +150,8 @@ class SponsorshipForm(forms.ModelForm):
         # if preset_amount_str:
         #     self.fields['sponsorship_amount'] = forms.ChoiceField(choices=get_preset_amount_choices(preset_amount_str))
 
-
     def clean_sponsorship_amount(self):
-        #raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
+        # raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
         try:
             if float(self.cleaned_data['sponsorship_amount']) <= 0:
                 raise forms.ValidationError(_(u'Please enter a positive number'))

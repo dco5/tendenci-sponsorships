@@ -60,14 +60,14 @@ def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorship
                 user.is_active = 0
                 user.save()
 
-                profile_kwarg = {'user':user,
-                                 'company':sponsorship.company,
-                                 'address':sponsorship.address,
-                                 'address2':sponsorship.address2,
-                                 'city':sponsorship.city,
-                                 'state':sponsorship.state,
-                                 'zipcode':sponsorship.zip_code,
-                                 'phone':sponsorship.phone}
+                profile_kwarg = {'user': user,
+                                 'company': sponsorship.company,
+                                 'address': sponsorship.address,
+                                 'address2': sponsorship.address2,
+                                 'city': sponsorship.city,
+                                 'state': sponsorship.state,
+                                 'zipcode': sponsorship.zip_code,
+                                 'phone': sponsorship.phone}
                 if request.user.is_anonymous():
                     profile_kwarg['creator'] = user
                     profile_kwarg['creator_username'] = user.username
@@ -111,7 +111,7 @@ def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorship
                             'invoice': invoice,
                             'request': request,
                         }
-                        notification.send_emails(recipients,'sponsorship_added', extra_context)
+                        notification.send_emails(recipients, 'sponsorship_added', extra_context)
 
             # email to user
             email_receipt = form.cleaned_data['email_receipt']
@@ -129,16 +129,15 @@ def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorship
         form = form_class(user=request.user, event_id=id)
         captcha_form = CaptchaForm()
 
-
     currency_symbol = get_setting("site", "global", "currencysymbol")
     if not currency_symbol: currency_symbol = "$"
 
     return render_to_response(template_name, {
-        'form':form,
-        'captcha_form' : captcha_form,
-        'use_captcha' : use_captcha,
+        'form': form,
+        'captcha_form': captcha_form,
+        'use_captcha': use_captcha,
         'currency_symbol': currency_symbol},
-        context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))
 
 
 def add_confirm(request, id, template_name="sponsorships/add_confirm.html"):
@@ -150,13 +149,13 @@ def add_confirm(request, id, template_name="sponsorships/add_confirm.html"):
 @login_required
 def detail(request, id=None, template_name="sponsorships/view.html"):
     sponsorship = get_object_or_404(Sponsorship, pk=id)
-    if not has_perm(request.user,'sponsorships.view_sponsorship'): raise Http403
+    if not has_perm(request.user, 'sponsorships.view_sponsorship'): raise Http403
 
     EventLog.objects.log(instance=sponsorship)
 
     sponsorship.sponsorship_amount = tcurrency(sponsorship.sponsorship_amount)
-    return render_to_response(template_name, {'sponsorship':sponsorship},
-        context_instance=RequestContext(request))
+    return render_to_response(template_name, {'sponsorship': sponsorship},
+                              context_instance=RequestContext(request))
 
 
 def receipt(request, id, guid, template_name="sponsorships/receipt.html"):
@@ -167,9 +166,9 @@ def receipt(request, id, guid, template_name="sponsorships/receipt.html"):
     EventLog.objects.log(instance=sponsorship)
 
     if (not sponsorship.invoice) or sponsorship.invoice.balance > 0 or (not sponsorship.invoice.is_tendered):
-        template_name="sponsorships/view.html"
-    return render_to_response(template_name, {'sponsorship':sponsorship},
-        context_instance=RequestContext(request))
+        template_name = "sponsorships/view.html"
+    return render_to_response(template_name, {'sponsorship': sponsorship},
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -182,5 +181,5 @@ def search(request, template_name="sponsorships/search.html"):
 
     EventLog.objects.log()
 
-    return render_to_response(template_name, {'sponsorships':sponsorships},
-        context_instance=RequestContext(request))
+    return render_to_response(template_name, {'sponsorships': sponsorships},
+                              context_instance=RequestContext(request))

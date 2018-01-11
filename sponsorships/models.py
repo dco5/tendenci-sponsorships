@@ -6,6 +6,7 @@ from tendenci.apps.invoices.models import Invoice
 from sponsorships.managers import SponsorshipManager
 from tendenci.apps.events.models import Event
 
+
 class Sponsorship(models.Model):
     guid = models.CharField(max_length=50)
     user = models.ForeignKey(User, null=True)
@@ -22,11 +23,11 @@ class Sponsorship(models.Model):
     referral_source = models.CharField(_('referred by'), max_length=200, default='', blank=True, null=True)
     comments = models.TextField(blank=True, null=True)
     sponsorship_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    allocation = models.CharField(max_length=150, default='', blank=True,  null=True)
+    allocation = models.CharField(max_length=150, default='', blank=True, null=True)
     payment_method = models.CharField(max_length=50, default='cc')
     invoice = models.ForeignKey(Invoice, blank=True, null=True)
     create_dt = models.DateTimeField(auto_now_add=True)
-    creator = models.ForeignKey(User, null=True,  related_name="sponsorship_creator")
+    creator = models.ForeignKey(User, null=True, related_name="sponsorship_creator")
     creator_username = models.CharField(max_length=50, null=True)
     owner = models.ForeignKey(User, null=True, related_name="sponsorship_owner")
     owner_username = models.CharField(max_length=50, null=True)
@@ -36,7 +37,7 @@ class Sponsorship(models.Model):
     event = models.ForeignKey(Event, blank=True, null=True)
 
     objects = SponsorshipManager()
-    
+
     class Meta:
         app_label = 'sponsorships'
 
@@ -44,11 +45,11 @@ class Sponsorship(models.Model):
         if not self.id:
             self.guid = str(uuid.uuid1())
             if user and user.id:
-                self.creator=user
-                self.creator_username=user.username
+                self.creator = user
+                self.creator_username = user.username
         if user and user.id:
-            self.owner=user
-            self.owner_username=user.username
+            self.owner = user
+            self.owner_username = user.username
 
         super(Sponsorship, self).save(*args, **kwargs)
 
@@ -77,7 +78,7 @@ class Sponsorship(models.Model):
             # #CREDIT sponsorships SALES
             acct_number = self.get_acct_number()
             acct = Acct.objects.get(account_number=acct_number)
-            AcctTran.objects.create_acct_tran(user, ae, acct, amount*(-1))
+            AcctTran.objects.create_acct_tran(user, ae, acct, amount * (-1))
 
     def get_acct_number(self, discount=False):
         if discount:
@@ -104,5 +105,4 @@ class Sponsorship(models.Model):
                     'invoice': payment.invoice,
                     'request': request,
                 }
-                notification.send_emails(recipients,'sponsorships', extra_context)
-
+                notification.send_emails(recipients, 'sponsorships', extra_context)

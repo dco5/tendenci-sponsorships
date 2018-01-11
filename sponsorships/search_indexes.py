@@ -2,6 +2,7 @@ from haystack import indexes
 
 from sponsorships.models import Sponsorship
 
+
 class SponsorshipIndex(indexes.SearchIndex):
     text = indexes.CharField(document=True, use_template=True)
     sponsorship_amount = indexes.FloatField(model_attr='sponsorship_amount')

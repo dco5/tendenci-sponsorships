@@ -1,10 +1,15 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.forms import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
 from sponsorships.models import Sponsorship, SponsorshipLevel
 from sponsorships.utils import get_allocation_choices, get_payment_method_choices, get_preset_amount_choices, \
     get_initial_choice
+from tendenci.apps.events.models import Event
 from tendenci.apps.site_settings.utils import get_setting
+
+from django.forms.fields import Field
+
+setattr(Field, 'is_checkbox', lambda self: isinstance(self.widget, forms.CheckboxInput))
 
 
 class SponsorshipLevelForm(forms.ModelForm):
@@ -167,3 +172,6 @@ class SponsorshipForm(forms.ModelForm):
         except:
             raise forms.ValidationError(_(u'Please enter a numeric positive number'))
         return self.cleaned_data['sponsorship_amount']
+
+
+SponsorshipLevelFormSet = inlineformset_factory(Event, SponsorshipLevel, SponsorshipLevelForm, extra=0)

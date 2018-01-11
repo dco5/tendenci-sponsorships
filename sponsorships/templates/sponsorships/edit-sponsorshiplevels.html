@@ -3,6 +3,7 @@
 {% load perm_tags %}
 {% load styled_forms %}
 {% load i18n %}
+{% load widget_tweaks %}
 
 {% block title %}{{ block.super }}{% trans 'Edit' %}{% endblock %}
 
@@ -10,7 +11,6 @@
     {{ block.super }}
     <link type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css"
           rel="stylesheet"/>
-    <link rel="stylesheet" href="{{ STATIC_URL }}timepicker/timepicker.css"/>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/events.css">
 
 {% endblock %}
@@ -50,8 +50,57 @@
                   enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="forms">
+                    <fieldset>
+                        <legend>Sponsorship Levels</legend>
+                        {{ formset.management_form }}
+
+                        {% with formset.empty_form as form %}
+                            <div class="empty-form" style="display: none">
+                                <h3>Sponsorship Level</h3>
+                                {% for field in form %}
+                                    {% if field.is_hidden %}
+                                        {{ field }}
+                                    {% elif field.field.is_checkbox %}
+
+                                        <div class="form-group">
+                                            <div class="checkbox">
+                                                <label>
+                                                    {{ field }} {{ field.label }}
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                    {% else %}
+                                        <div class="form-group row {% if field.errors %}has-danger{% endif %}">
+                                            <label class="col-md-3 form-control-label" for="{{ field.id_for_label }}">
+                                                {{ field.label }} {% if field.field.required %} * {% endif %}
+                                            </label>
+                                            <div class="col-md-9">
+                                                {% render_field field class="form-control" %}
+                                                {% if field.errors %}
+                                                    {% for field_error in field.errors %}
+                                                        <span id="{{ field.id_for_label }}-help-block"
+                                                              class="help-block has-danger">{{ field_error }}</span>
+                                                    {% endfor %}
+                                                {% endif %}
+                                                {% if field.help_text %}
+                                                    <span class="help-block">{{ field.help_text }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                                <button type="button" class="btn btn-danger" data-formset-remove-form>
+                                    Delete Sponsorship Level
+                                </button>
+                                <hr>
+                            </div>
+                        {% endwith %}
+
+                    </fieldset>
                     {{ form }}
-                    <input type="submit" value="{% trans 'Save Changes' %}" name="_save"/>
+                    <input type="submit" class="btn btn-success" value="{% trans 'Save Changes' %}" name="_save"/>
+                    <a href="{{ event.get_absolute_url }}" class="btn btn-danger"> Cancel</a>
                 </div>
             </form>
 

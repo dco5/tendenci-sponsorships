@@ -1,10 +1,19 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from sponsorships.models import Sponsorship
+from sponsorships.models import Sponsorship, SponsorshipLevel
 from sponsorships.utils import get_allocation_choices, get_payment_method_choices, get_preset_amount_choices, \
     get_initial_choice
 from tendenci.apps.site_settings.utils import get_setting
+
+
+class SponsorshipLevelForm(forms.ModelForm):
+    class Meta:
+        model = SponsorshipLevel
+        fields = ('name',
+                  'description',
+                  'amount',
+                  'limit')
 
 
 class SponsorshipAdminForm(forms.ModelForm):

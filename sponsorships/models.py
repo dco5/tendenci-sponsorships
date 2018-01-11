@@ -12,6 +12,7 @@ class SponsorshipLevel(models.Model):
     name = models.CharField(max_length=250)
     description = models.TextField(blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    limit = models.IntegerField(default=1)
 
     class Meta:
         # app_label = 'sponsorship_level'

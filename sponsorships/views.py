@@ -2,11 +2,13 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, render
 from django.contrib.auth.models import User
-from sponsorships.forms import SponsorshipForm
+from sponsorships.forms import SponsorshipForm, SponsorshipLevelForm
 from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user, sponsorship_event_add
 from sponsorships.models import Sponsorship
+from tendenci.apps.events.models import Event
+from tendenci.apps.perms.decorators import is_enabled
 from tendenci.apps.site_settings.utils import get_setting
 from tendenci.apps.base.forms import CaptchaForm
 from tendenci.apps.base.http import Http403
@@ -183,3 +185,24 @@ def search(request, template_name="sponsorships/search.html"):
 
     return render_to_response(template_name, {'sponsorships': sponsorships},
                               context_instance=RequestContext(request))
+
+
+@is_enabled('events')
+@login_required
+def edit_sponsorship_level(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    if not has_perm(request.user, 'events.change_event', event):
+        raise Http403
+
+    if request.method == 'POST':
+        form = SponsorshipLevelForm(request.POST)
+        if form.is_valid():
+            pass
+    else:
+        form = SponsorshipLevelForm()
+
+    return render(request, "sponsorships/edit-sponsorshiplevels.html", {
+        'event': event,
+        'form': form,
+        'label': 'sponsorship'
+    })

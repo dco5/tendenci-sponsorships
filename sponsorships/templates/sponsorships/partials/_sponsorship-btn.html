@@ -1,0 +1,7 @@
+{% if sponsorship_enabled %}
+    <div>
+        <a href="{% url 'sponsorship.add_with_event' event.pk %}" class="btn btn-lg btn-warning">
+            Sponsor this Event
+        </a>
+    </div>
+{% endif %}

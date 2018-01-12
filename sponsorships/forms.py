@@ -37,6 +37,7 @@ class SponsorshipAdminForm(forms.ModelForm):
     email_receipt = forms.BooleanField(initial=True)
     comments = forms.CharField(max_length=1000, required=False,
                                widget=forms.Textarea(attrs={'rows': '3'}))
+
     allocation = forms.ChoiceField()
 
     class Meta:
@@ -57,6 +58,8 @@ class SponsorshipAdminForm(forms.ModelForm):
                   'allocation',
                   'referral_source',
                   'comments',
+                  'event',
+                  'level'
                   )
 
     def __init__(self, *args, **kwargs):
@@ -81,7 +84,6 @@ class SponsorshipAdminForm(forms.ModelForm):
 
 class SponsorshipForm(forms.ModelForm):
     # get the payment_method choices from settings
-    sponsorship_amount = forms.CharField(error_messages={'required': _('Please enter the sponsorships amount.')})
     payment_method = forms.CharField(error_messages={'required': _('Please select a payment method.')},
                                      widget=forms.RadioSelect(choices=(('check-paid', _('Paid by Check')),
                                                                        ('cc', _('Make Online Payment')),)),
@@ -95,27 +97,28 @@ class SponsorshipForm(forms.ModelForm):
     email_receipt = forms.BooleanField(initial=True, required=False)
     comments = forms.CharField(max_length=1000, required=False,
                                widget=forms.Textarea(attrs={'rows': '3'}))
-    allocation = forms.ChoiceField()
 
     class Meta:
         model = Sponsorship
-        fields = ('sponsorship_amount',
-                  'payment_method',
-                  'first_name',
-                  'last_name',
-                  'company',
-                  'address',
-                  'address2',
-                  'city',
-                  'state',
-                  'zip_code',
-                  'phone',
-                  'email',
-                  'email_receipt',
-                  'allocation',
-                  'referral_source',
-                  'comments',
-                  )
+        fields = (
+            'payment_method',
+            'first_name',
+            'last_name',
+            'company',
+            'address',
+            'address2',
+            'city',
+            'state',
+            'zip_code',
+            'phone',
+            'email',
+            'email_receipt',
+            'allocation',
+            'referral_source',
+            'comments',
+            'event',
+            'level'
+        )
 
     def __init__(self, *args, **kwargs):
         if 'user' in kwargs:
@@ -123,12 +126,13 @@ class SponsorshipForm(forms.ModelForm):
         else:
             self.user = None
 
-        if 'event_id' in kwargs:
-            self.event_id = kwargs.pop('event_id', None)
+        if 'event' in kwargs:
+            self.event = kwargs.pop('event', None)
         else:
-            self.event_id = None
+            self.event = None
 
         super(SponsorshipForm, self).__init__(*args, **kwargs)
+
         # populate the user fields
         if self.user and self.user.id:
             self.fields['first_name'].initial = self.user.first_name
@@ -147,22 +151,16 @@ class SponsorshipForm(forms.ModelForm):
             except:
                 pass
 
+        self.fields['event'].widget = forms.HiddenInput()
+        self.fields['event'].initial = self.event.id
+
         self.fields['payment_method'].widget = forms.RadioSelect(choices=get_payment_method_choices(self.user))
 
-        # allocation_str = get_setting('module', 'sponsorships', 'sponsorshipsallocations')
-
-        self.fields['allocation'].choices = get_allocation_choices(self.user)
-
-        if self.event_id:
-            self.fields['allocation'].initial = get_initial_choice(self.event_id)
-
-        # if allocation_str:
-        #     self.fields['allocation'].choices = get_allocation_choices(self.user, allocation_str)
-        # else:
-        #     del self.fields['allocation']
-        # preset_amount_str = (get_setting('module', 'sponsorships', 'sponsorshipspresetamounts')).strip('')
-        # if preset_amount_str:
-        #     self.fields['sponsorship_amount'] = forms.ChoiceField(choices=get_preset_amount_choices(preset_amount_str))
+        self.fields['allocation'].initial = self.event.title.strip()
+        self.fields['level'] = forms.ModelChoiceField(
+            queryset=SponsorshipLevel.objects.filter(event_id=self.event.id), label="Sponsorship Levels",
+            help_text="Please select the level you want to sponsor."
+        )
 
     def clean_sponsorship_amount(self):
         # raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
@@ -172,6 +170,15 @@ class SponsorshipForm(forms.ModelForm):
         except:
             raise forms.ValidationError(_(u'Please enter a numeric positive number'))
         return self.cleaned_data['sponsorship_amount']
+
+    def save(self, commit=False):
+        clean_data = self.cleaned_data
+        sponsorship = super(SponsorshipForm, self).save(commit)
+        level = clean_data.get('level')
+
+        sponsorship.sponsorship_amount = level.amount
+
+        return sponsorship
 
 
 SponsorshipLevelFormSet = inlineformset_factory(Event, SponsorshipLevel, SponsorshipLevelForm, extra=0)

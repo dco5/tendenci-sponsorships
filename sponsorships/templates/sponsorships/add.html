@@ -1,6 +1,7 @@
 {% extends "sponsorships/base.html" %}
 {% load i18n %}
 {% load sponsorship_tags %}
+{% load widget_tweaks %}
 
 {% block title %}{% trans 'Sponsor an Event' %}{% endblock %}
 
@@ -13,11 +14,13 @@
     <div class="t">
         <div class="sponsorship-add">
 
-            <h1>{% trans 'Sponsor an Event' %}</h1>
-            {% blocktrans %}
-                <p>Complete the form below to sponsor an event.
-                    The required fields are marked with <em class="body-copy-alert">*</em>. <br/>Thank You!</p>
-            {% endblocktrans %}
+            <h1>{% trans 'Sponsor' %} {{ event.title }}</h1>
+
+            <p>
+                Complete the form below to sponsor an event. <br>
+                The required fields are marked with <em class="body-copy-alert">*</em>. <br/>
+            </p>
+
             <br/>
             {% if form.errors or captcha_form.captcha.errors %}
                 <div class="errors">
@@ -35,29 +38,36 @@
                 </div>
             {% endif %}
 
-            <form method="post" action=".">{% csrf_token %}
-                <div class="field-wrapper">
-                    {% if form.sponsorship_amount.errors %}
-                        <div class="errs">{{ form.sponsorship_amount.errors }}</div>
-                    {% endif %}
-                    <label for="id_sponsorship_amount" class="field-label"><em class="body-copy-alert">*</em>
-                        {% trans 'Sponsorship Amount' %} ({{ currency_symbol }})</label>
-                    {{ form.sponsorship_amount }}
-                </div>
-                <div class="clear-left"></div>
-
-                {% if form.allocation %}
-                    <div class="field-wrapper">
-                        {% if form.form.allocation.errors %}
-                            <div class="errs">{{ form.form.allocation.errors }}</div>
-                        {% endif %}
-                        <label for="id_form.allocation" class="field-label">
-                            {% trans 'Choose an event to Sponsor' %}</label>
-                        {{ form.allocation }}
+            <form method="post" action=".">
+                {% csrf_token %}
+                {% with form.level as field %}
+                    <div class="form-group row {% if field.errors %}has-danger{% endif %}">
+                        <label class="col-md-3 form-control-label" for="{{ field.id_for_label }}">
+                            {% if field.field.required %}
+                                <em class="body-copy-alert">*</em> {% endif %} {{ field.label }}
+                        </label>
+                        <div class="col-md-9">
+                            {% render_field field class="form-control" %}
+                            {% if field.errors %}
+                                {% for field_error in field.errors %}
+                                    <span id="{{ field.id_for_label }}-help-block"
+                                          class="help-block has-danger">{{ field_error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                            {% if field.help_text %}
+                                <span class="help-block">{{ field.help_text }}</span>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="clear-left"></div>
+                {% endwith %}
 
-                {% endif %}
+                <ul class="list-unstyled">
+                    {% for level in sponsorship_levels %}
+                        <li><strong>{{ level.name }} - ${{ level.amount }}: </strong> {{ level.description }}</li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                {% render_field form.event %}
 
                 <div class="field-wrapper">
                     {% if form.payment_method.errors %}
@@ -68,7 +78,7 @@
 
                     <div class="payment-method-list">{{ form.payment_method }}</div>
                 </div>
-                <div class="clear-left"></div>
+                <div class="clear-both"></div>
 
                 <div class="section-header">
                     {% trans 'Billing Information' %}
@@ -203,7 +213,7 @@
                 {% endif %}
 
                 <div class="submitbutton">
-                    <input type="submit" name="submit" value="{% trans 'Submit' %}"/>
+                    <input type="submit" class="btn btn-default" name="submit" value="{% trans 'Submit' %}"/>
                 </div>
                 <div class="clear-right"></div>
             </form>

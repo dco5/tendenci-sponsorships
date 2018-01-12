@@ -28,8 +28,10 @@ except:
 def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorships/add.html"):
     use_captcha = get_setting('site', 'global', 'captcha')
 
+    event = get_object_or_404(Event, pk=id)
+
     if request.method == "POST":
-        form = form_class(request.POST, user=request.user, event_id=id)
+        form = form_class(request.POST, user=request.user, event=event)
         captcha_form = CaptchaForm(request.POST)
         if not use_captcha:
             del captcha_form.fields['captcha']
@@ -89,9 +91,6 @@ def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorship
             # create invoice
             invoice = sponsorship_inv_add(user, sponsorship)
 
-            # looks for the event an adds it to the sponsorship
-            event = sponsorship_event_add(sponsorship.allocation, sponsorship)
-
             # updated the invoice_id for mp, so save again
             sponsorship.save(user)
 
@@ -127,19 +126,26 @@ def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorship
                 return HttpResponseRedirect(reverse('payment.pay_online', args=[invoice.id, invoice.guid]))
             else:
                 return HttpResponseRedirect(reverse('sponsorship.add_confirm', args=[sponsorship.id]))
+
     else:
-        form = form_class(user=request.user, event_id=id)
+        form = form_class(user=request.user, event=event)
         captcha_form = CaptchaForm()
 
     currency_symbol = get_setting("site", "global", "currencysymbol")
-    if not currency_symbol: currency_symbol = "$"
 
-    return render_to_response(template_name, {
-        'form': form,
-        'captcha_form': captcha_form,
-        'use_captcha': use_captcha,
-        'currency_symbol': currency_symbol},
-                              context_instance=RequestContext(request))
+    if not currency_symbol:
+        currency_symbol = "$"
+
+    return render_to_response(
+        template_name, {
+            'form': form,
+            'event': event,
+            'sponsorship_levels': event.sponsorship_levels.all(),
+            'captcha_form': captcha_form,
+            'use_captcha': use_captcha,
+            'currency_symbol': currency_symbol
+        },
+        context_instance=RequestContext(request))
 
 
 def add_confirm(request, id, template_name="sponsorships/add_confirm.html"):

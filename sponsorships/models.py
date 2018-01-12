@@ -59,7 +59,7 @@ class Sponsorship(models.Model):
 
     level = models.ForeignKey(SponsorshipLevel, blank=True, null=True, related_name='sponsorships')
 
-    event = models.ForeignKey(Event, blank=True, null=True)
+    event = models.ForeignKey(Event, blank=True, null=True, related_name="sponsorships")
 
     objects = SponsorshipManager()
 

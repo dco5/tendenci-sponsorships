@@ -170,6 +170,15 @@ class SponsorshipForm(forms.ModelForm):
             raise forms.ValidationError(_(u'Please enter a numeric positive number'))
         return self.cleaned_data['sponsorship_amount']
 
+    def clean_level(self):
+        level = self.cleaned_data['level']
+        event_sponsored_levels_count = self.event.sponsorships.filter(level_id=level.id).count()
+
+        if event_sponsored_levels_count >= level.limit:
+            raise forms.ValidationError("This Sponsorship Level is full, please select another level.")
+
+        return level
+
     def save(self, commit=False):
         clean_data = self.cleaned_data
         sponsorship = super(SponsorshipForm, self).save(commit)

@@ -2,7 +2,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404, render
+from django.shortcuts import render_to_response, get_object_or_404, render, redirect
 from django.contrib.auth.models import User
 from sponsorships.forms import SponsorshipForm, SponsorshipLevelForm, SponsorshipLevelFormSet
 from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user, sponsorship_event_add
@@ -191,13 +191,16 @@ def search(request, template_name="sponsorships/search.html"):
 @login_required
 def edit_sponsorship_level(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
+
     if not has_perm(request.user, 'events.change_event', event):
         raise Http403
 
     if request.method == 'POST':
         sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)
         if sponsorship_level_formset.is_valid():
-            pass
+            sponsorship_level_formset.save()
+
+            return redirect(event.get_absolute_url())
     else:
         sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)
 

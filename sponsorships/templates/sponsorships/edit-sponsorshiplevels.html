@@ -52,106 +52,93 @@
                 <div class="forms">
                     <fieldset>
                         <legend>Sponsorship Levels</legend>
-                        {{ formset.management_form }}
+                        <hr>
+                        <div id="sponsorship-levels">
+                            {{ formset.management_form }}
 
-                        {% with formset.empty_form as form %}
+                            {# Empty Form #}
                             <div class="empty-form" style="display: none">
-                                <h3>Sponsorship Level</h3>
-                                {% for field in form %}
-                                    {% if field.is_hidden %}
-                                        {{ field }}
-                                    {% elif field.field.is_checkbox %}
+                                <div class="extra-sponsorship_levels-wrapper">
+                                    <h3>Sponsorship Level</h3>
+                                    {% for field in formset.empty_form %}
+                                        {% if field.is_hidden %}
+                                            {{ field }}
+                                        {% elif field.field.is_checkbox %}
 
-                                        <div class="form-group">
-                                            <div class="checkbox">
-                                                <label>
-                                                    {{ field }} {{ field.label }}
+                                            <div class="form-group">
+                                                <div class="col-md-9">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            {{ field }} {{ field.label }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        {% else %}
+                                            <div class="form-group row {% if field.errors %}has-danger{% endif %}">
+                                                <label class="col-md-3 form-control-label"
+                                                       for="{{ field.id_for_label }}">
+                                                    {{ field.label }} {% if field.field.required %} * {% endif %}
                                                 </label>
+                                                <div class="col-md-9">
+                                                    {% render_field field class="form-control" %}
+                                                    {% if field.errors %}
+                                                        {% for field_error in field.errors %}
+                                                            <span id="{{ field.id_for_label }}-help-block"
+                                                                  class="help-block has-danger">{{ field_error }}</span>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                    {% if field.help_text %}
+                                                        <span class="help-block">{{ field.help_text }}</span>
+                                                    {% endif %}
+                                                </div>
                                             </div>
-                                        </div>
-
-                                    {% else %}
-                                        <div class="form-group row {% if field.errors %}has-danger{% endif %}">
-                                            <label class="col-md-3 form-control-label" for="{{ field.id_for_label }}">
-                                                {{ field.label }} {% if field.field.required %} * {% endif %}
-                                            </label>
-                                            <div class="col-md-9">
-                                                {% render_field field class="form-control" %}
-                                                {% if field.errors %}
-                                                    {% for field_error in field.errors %}
-                                                        <span id="{{ field.id_for_label }}-help-block"
-                                                              class="help-block has-danger">{{ field_error }}</span>
-                                                    {% endfor %}
-                                                {% endif %}
-                                                {% if field.help_text %}
-                                                    <span class="help-block">{{ field.help_text }}</span>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                                <button type="button" class="btn btn-danger" data-formset-remove-form>
-                                    Delete Sponsorship Level
-                                </button>
-                                <hr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <button type="button" class="btn btn-danger" data-formset-remove-form>
+                                        Remove Sponsorship Level
+                                    </button>
+                                    <hr>
+                                </div>
                             </div>
-                        {% endwith %}
 
+                            <div class="extra-forms">
+                                {% for form in formset.forms %}
+                                    <div class="extra-sponsorship_level-form-{{ forloop.counter0 }}">
+                                        <h3>Sponsor Level</h3>
+                                        {% include 'sponsorships/partials/_form.html' %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <fieldset class="controls">
+                                <button type="button" class="btn btn-success" id="formset-add-form"
+                                        data-formset-add-form>
+                                    Add New Sponsorship Level
+                                </button>
+                            </fieldset>
+                        </div>
                     </fieldset>
-                    {{ form }}
+
                     <input type="submit" class="btn btn-success" value="{% trans 'Save Changes' %}" name="_save"/>
                     <a href="{{ event.get_absolute_url }}" class="btn btn-danger"> Cancel</a>
                 </div>
             </form>
 
-            <div id="confirm-dialog" title="{% trans 'Apply changes to all events?' %}">
-                <p>{% blocktrans %}
-                    These changes would be applied to every event part of this series, including past events. Are you
-                    sure?
-                {% endblocktrans %}</p>
-            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block extra_body %}
     {{ block.super }}
-    <script type="text/javascript" src="{{ TINYMCE_JS_URL }}"></script>
-    <script type="text/javascript" src="{% url 'tinymce-filebrowser' %}"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}django_tinymce/init_tinymce.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/global/tinymce.event_handlers.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}timepicker/timepicker.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/events_formset.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/slug.js"></script>
-    <script type="text/javascript">
-
-        var displayConfirmation = true;
-        $('#confirm-dialog').dialog({
-            autoOpen: false,
-            resizable: false,
-            width: 600,
-            modal: true,
-            buttons: {
-                'Yes': function () {
-                    displayConfirmation = false;
-                    $('#event-form').submit();
-                },
-                Cancel: function () {
-                    $(this).dialog('close');
-                }
-            }
-        });
-        $('#event-form').submit(function () {
-            if ($('#id_apply_changes_to_2').is(':checked') && displayConfirmation) {
-                $('#confirm-dialog').dialog('open');
-                return false;
-            }
-        });
-    </script>
-
+    <script type="text/javascript" src="{{ STATIC_URL }}js/sponsorship-formset.js"></script>
 
     <script type="text/javascript">
+        new Formset(document.querySelector('#sponsorship-levels'), 'sponsorship_levels')
     </script>
+
     {% include 'tags/autocomplete.html' %}
 {% endblock %}

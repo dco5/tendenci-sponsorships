@@ -1,0 +1,35 @@
+{% for field in form %}
+    {% if field.is_hidden %}
+        {{ field }}
+    {% elif field.field.is_checkbox %}
+
+        <div class="form-group">
+            <div class="col-md-9">
+                <div class="checkbox">
+                    <label>
+                        {{ field }} {{ field.label }}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="form-group row {% if field.errors %}has-danger{% endif %}">
+            <label class="col-md-3 form-control-label" for="{{ field.id_for_label }}">
+                {{ field.label }} {% if field.field.required %} * {% endif %}
+            </label>
+            <div class="col-md-9">
+                {% render_field field class="form-control" %}
+                {% if field.errors %}
+                    {% for field_error in field.errors %}
+                        <span id="{{ field.id_for_label }}-help-block"
+                              class="help-block has-danger">{{ field_error }}</span>
+                    {% endfor %}
+                {% endif %}
+                {% if field.help_text %}
+                    <span class="help-block">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}

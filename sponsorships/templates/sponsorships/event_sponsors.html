@@ -1,18 +1,93 @@
-{% extends "sponsorships/base.html" %}
+{% extends "base-wide.html" %}
 {% load i18n %}
-{% load sponsorship_tags %}
 {% load base_filters %}
 
-{% block title %}{% trans 'Event Sponsors' %}{% endblock %}
+{% block title %}{{ event.title }} Sponsors{% endblock %}
 
 {% block extra_head %}
-{{ block.super }}
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/sponsorships.css">
-    <link rel="stylesheet" href="{{ THEME_URL }}media/custom.css">
+    {{ block.super }}
+
+    <link rel="stylesheet" href="{{ THEME_URL }}media/css/sponsorships.css">
 
 {% endblock %}
 
 {% block content %}
 
-    <h2>{{ event.title }}</h2>
+    <h1>Sponsors for:
+        <small>{{ event.title }}</small>
+    </h1>
+
+    <p>
+        Number of Sponsors: {{ sponsors_num }}<br>
+        Total Amount: {{ total|format_currency }}
+    </p>
+
+    <a class="btn btn-info" href="{{ event.get_absolute_url }}">&laquo; {% trans "Back to Event" %}</a>
+    {% if sponsors %}
+        <div class="sponsorships-wrap border">
+            {% for sponsor in sponsors %}
+
+                {% if sponsor.invoice.balance == 0.00 and sponsor.invoice.status_detail == "tendered" %}
+
+                    <div class="sponsorship-wrap-search">
+                        <h2>
+                            <a href="{% url 'sponsorship.view' sponsor.id %}">
+                                {{ sponsor.first_name }} {{ sponsor.last_name }}
+                            </a>
+                        </h2>
+                        <div class="sponsorship-item-right">
+                            {% if sponsor.invoice %}
+                                <div class="float-right">
+                                    <a class="btn btn-success"
+                                       href="{% url 'invoice.view' sponsor.invoice.id %}">View Invoice</a>
+                                </div>
+                            {% endif %}
+
+                            <div class="content">{% trans 'Invoice:' %}
+                                {% if sponsor.invoice %}
+                                    <a href="{% url 'invoice.view' sponsor.invoice.id %}"><strong>{{ sponsor.invoice.id }}</strong></a>
+                                {% else %}
+                                    n/a
+                                {% endif %}
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                {% trans 'Amount:' %} <b>{{ sponsor.sponsorship_amount|format_currency }}</b>
+                            </div>
+                            <div class="content">
+                                <strong>Sponsorship Level:</strong> {{ sponsor.level }}
+                            </div>
+                            {% if sponsor.company %}
+                                <div class="content"><strong>Company:</strong> {{ sponsor.company }}</div>
+                            {% endif %}
+                            {% if sponsor.address %}
+                                <div class="content"><strong>Address:</strong>
+                                    <address>
+                                        {{ sponsor.address }}
+                                        {{ sponsor.city }}, {{ sponsor.state }} {{ sponsor.zip_code }}
+                                    </address>
+                                </div>
+                            {% endif %}
+
+                            {% if sponsor.phone %}
+                                <div class="content"><strong>Phone:</strong> {{ sponsor.phone }}</div>
+                            {% endif %}
+                            {% if sponsor.email %}
+                                <div class="content"><strong>Email:</strong> {{ sponsor.email }}</div>
+                            {% endif %}
+
+                            <div class="content"><strong>Payment Method:</strong> {{ sponsor.payment_method }}</div>
+                        </div>
+
+                        <div class="clear-left"></div>
+                        <div class="meta">
+                            <div class="submitted"><strong>Created:</strong> {{ sponsor.create_dt|date:"long" }}</div>
+                            <div class="submitted"><strong>Notes:</strong> {{ sponsor.comments }}</div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <h4 class="label label-danger">There are not sponsors for this event yet!</h4>
+    {% endif %}
 {% endblock %}

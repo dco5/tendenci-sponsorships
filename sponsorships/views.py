@@ -215,3 +215,25 @@ def edit_sponsorship_level(request, event_id):
         'formset': sponsorship_level_formset,
         'label': 'sponsorship'
     })
+
+
+@login_required
+def event_sponsors(request, event_id):
+    event = get_object_or_404(Event, pk=event_id)
+    sponsors = event.sponsorships.all()
+
+    total = 0
+    total_sponsors = 0
+
+    for sponsor in sponsors:
+        if sponsor.invoice.balance == 0 and sponsor.invoice.status_detail == "tendered":
+            total += sponsor.sponsorship_amount
+            total_sponsors += 1
+
+    return render(request,'sponsorships/event_sponsors.html',
+                  {
+                      'sponsors': sponsors,
+                      'event': event,
+                      'total': total,
+                      'sponsors_num': total_sponsors
+                  })

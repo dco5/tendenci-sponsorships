@@ -12,5 +12,6 @@ urlpatterns = patterns(
         name="sponsorship.receipt"),
     url(r'^sponsorships/search/$', 'search', name="sponsorship.search"),
 
-    url(r'^event/sponsorship-level/(?P<event_id>\d+)/$', 'edit_sponsorship_level', name='sponsorship.level.edit')
+    url(r'^event/sponsorship-level/(?P<event_id>\d+)/$', 'edit_sponsorship_level', name='sponsorship.level.edit'),
+    url(r'^event/sponsors/(?P<event_id>\d+)/$', 'event_sponsors', name="event_sponsors"),
 )

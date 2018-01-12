@@ -1,10 +1,13 @@
 {% extends "sponsorships/base.html" %}
 {% load pagination_tags %}
-{% load avatar_tags %}
 {% load sponsorship_tags %}
 {% load base_tags %}
 {% load base_filters %}
 {% load perm_tags %}
+
+{% load profile_tags %}
+
+
 {% load i18n %}
 
 {% block title %}{% trans 'Sponsorship Search' %}{% endblock %}
@@ -13,8 +16,8 @@
 
 {% block extra_head %}
     {{ block.super }}
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/sponsorships.css">
-        <link rel="stylesheet" href="{{ THEME_URL }}media/custom.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/sponsorships.css">
+    <link rel="stylesheet" href="{{ THEME_URL }}media/custom.css">
 
 {% endblock %}
 
@@ -40,7 +43,7 @@
                             </h2>
                             {% if sponsorship.user %}
                                 <div class="sponsorship-item-left">
-                                    <a href="{% url 'profile' sponsorship.user.username %}">{% avatar sponsorship.user 56 %}</a>
+                                    <a href="{% url 'profile' sponsorship.user.username %}">{% gravatar sponsorship.user 56 %}</a>
                                 </div>
                             {% endif %}
                             <div class="sponsorship-item-right">
@@ -48,6 +51,10 @@
                                     <div class="float-right">
                                         <a class="btn btn-success"
                                            href="{% url 'invoice.view' sponsorship.invoice.id %}">View Invoice</a>
+                                        <br>
+                                        <a href="{{ sponsorship.event.get_absolute_url }}" class="btn btn-success">
+                                            View Sponsored Event
+                                        </a>
                                     </div>
                                 {% endif %}
                                 <div class="content">{% trans 'Invoice:' %}
@@ -67,7 +74,7 @@
                                 <div class="content">{% trans 'Payment Method:' %} {{ sponsorship.payment_method }}</div>
                             </div>
 
-                            <div class="clear-left"></div>
+                            <div class="clear-both"></div>
                             <div class="meta">
                                 <div class="submitted">{% trans 'Created:' %} {{ sponsorship.create_dt|date:"long" }}</div>
                             </div>

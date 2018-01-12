@@ -113,11 +113,11 @@ class SponsorshipForm(forms.ModelForm):
             'phone',
             'email',
             'email_receipt',
-            'allocation',
             'referral_source',
             'comments',
             'event',
-            'level'
+            'level',
+
         )
 
     def __init__(self, *args, **kwargs):
@@ -156,7 +156,6 @@ class SponsorshipForm(forms.ModelForm):
 
         self.fields['payment_method'].widget = forms.RadioSelect(choices=get_payment_method_choices(self.user))
 
-        self.fields['allocation'].initial = self.event.title.strip()
         self.fields['level'] = forms.ModelChoiceField(
             queryset=SponsorshipLevel.objects.filter(event_id=self.event.id), label="Sponsorship Levels",
             help_text="Please select the level you want to sponsor."
@@ -177,6 +176,7 @@ class SponsorshipForm(forms.ModelForm):
         level = clean_data.get('level')
 
         sponsorship.sponsorship_amount = level.amount
+        sponsorship.allocation = sponsorship.event.title.strip()
 
         return sponsorship
 

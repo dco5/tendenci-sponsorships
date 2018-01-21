@@ -15,7 +15,7 @@ class SponsorshipLevel(models.Model):
     limit = models.IntegerField(default=1)
 
     class Meta:
-        # app_label = 'sponsorship_level'
+        app_label = 'sponsorships'
         verbose_name = 'Sponsorship Level'
         verbose_name_plural = 'Sponsorship Levels'
 
@@ -65,7 +65,6 @@ class Sponsorship(models.Model):
 
     class Meta:
         app_label = 'sponsorships'
-
 
     def save(self, user=None, *args, **kwargs):
         if not self.id:

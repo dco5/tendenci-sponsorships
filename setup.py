@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 longdesc = \
-'''
-An addon for Tendenci for accepting Sponsorships for events.
-'''
+    '''
+    An addon for Tendenci for accepting Sponsorships for events.
+    '''
 
 setup(
     name='tendenci-sponsorships',
@@ -27,5 +27,5 @@ setup(
     ],
     include_package_data=True,
     packages=find_packages(),
-    install_requires=['tendenci>=7.0,<8.0'],
+    install_requires=['tendenci>=7.0,<8.0', 'django-widget-tweaks>=1.4'],
 )

@@ -17,8 +17,48 @@ class SponsorshipLevelForm(forms.ModelForm):
         model = SponsorshipLevel
         fields = ('name',
                   'description',
-                  'amount',
+                  'uses_fix_amount',
+                  "fix_amount",
+                  'min_amount',
+                  'max_amount',
                   'limit')
+
+    def __init__(self, *arg, **kwargs):
+        super(SponsorshipLevelForm, self).__init__(*arg, **kwargs)
+
+        self.fields['uses_fix_amount'].help_text = 'Select this if sponsorship level will only use a set amount.'
+
+        self.fields[
+            "fix_amount"].help_text = 'If "Uses fix amount" selected, please enter amount for sponsorship level.' \
+                                      ' This amount will be ignore if "Uses fix amount" is not selected.'
+
+        self.fields['limit'].help_text = 'Number of sponsors available for this level.'
+
+    def clean(self):
+        clean_data = super(SponsorshipLevelForm, self).clean()
+
+        uses_fix_amount = clean_data.get('uses_fix_amount')
+        amount = clean_data.get('fix_amount', None)
+
+        if uses_fix_amount and not amount:
+            self.add_error("fix_amount", 'Fix Amount cannot be empty if "Uses fix amount" selected.')
+            raise forms.ValidationError("Error in Amount field!")
+
+        if not uses_fix_amount:
+            min_amount = clean_data.get('min_amount', None)
+            max_amount = clean_data.get('max_amount', None)
+
+            if min_amount is None or min_amount <= 0:
+                self.add_error('min_amount', 'Please enter correct amount.')
+                raise forms.ValidationError("Error with min and max amounts")
+
+            if max_amount is None or max_amount <= 0:
+                self.add_error('max_amount', 'Please enter correct amount.')
+                raise forms.ValidationError("Error with min and max amounts")
+
+            if min_amount > max_amount:
+                self.add_error('min_amount', "Min amount cannot be greater than Max amount.")
+                raise forms.ValidationError("Error with min and max amounts")
 
 
 class SponsorshipAdminForm(forms.ModelForm):
@@ -117,6 +157,7 @@ class SponsorshipForm(forms.ModelForm):
             'comments',
             'event',
             'level',
+            'sponsorship_amount'
 
         )
 
@@ -161,13 +202,18 @@ class SponsorshipForm(forms.ModelForm):
             help_text="Please select the level you want to sponsor."
         )
 
+        self.fields['sponsorship_amount'].help_text = 'Please enter appropriate dollar amount for the selected ' \
+                                                      'Sponsorship Level.'
+
     def clean_sponsorship_amount(self):
         # raise forms.ValidationError(_(u'This username is already taken. Please choose another.'))
         try:
             if float(self.cleaned_data['sponsorship_amount']) <= 0:
-                raise forms.ValidationError(_(u'Please enter a positive number'))
+                self.add_error('sponsorship_amount', 'Please enter a positive number.')
+                raise forms.ValidationError(_(u'Please enter a positive number.'))
         except:
-            raise forms.ValidationError(_(u'Please enter a numeric positive number'))
+            self.add_error('sponsorship_amount', 'Please enter a numeric positive number.')
+            raise forms.ValidationError(_(u'Please enter a numeric positive number.'))
         return self.cleaned_data['sponsorship_amount']
 
     def clean_level(self):
@@ -175,17 +221,32 @@ class SponsorshipForm(forms.ModelForm):
         event_sponsored_levels_count = self.event.sponsorships.filter(level_id=level.id).count()
 
         if event_sponsored_levels_count >= level.limit:
+            self.add_error('level', 'This Sponsorship Level is full, please select another level.')
             raise forms.ValidationError("This Sponsorship Level is full, please select another level.")
 
         return level
 
-    def save(self, commit=False):
-        clean_data = self.cleaned_data
-        sponsorship = super(SponsorshipForm, self).save(commit)
+    def clean(self):
+        clean_data = super(SponsorshipForm, self).clean()
         level = clean_data.get('level')
+        sponsorship_amount = clean_data.get('sponsorship_amount')
 
-        sponsorship.sponsorship_amount = level.amount
+        if level.uses_fix_amount:
+            if sponsorship_amount != level.fix_amount:
+                self.add_error('sponsorship_amount',
+                               'Invalid amount for {} level, please enter ${}'.format(level.name, level.fix_amount))
+        else:
+            if sponsorship_amount < level.min_amount or sponsorship_amount > level.max_amount:
+                self.add_error('sponsorship_amount',
+                               'Invalid amount for {} level, please enter an amount between ${} and ${}'.format(
+                                   level.name,
+                                   level.min_amount,
+                                   level.max_amount))
+
+    def save(self, commit=False):
+        sponsorship = super(SponsorshipForm, self).save(commit)
         sponsorship.allocation = sponsorship.event.title.strip()
+        sponsorship.save()
 
         return sponsorship
 

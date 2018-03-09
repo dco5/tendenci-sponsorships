@@ -14,7 +14,7 @@
     <div class="t">
         <div class="sponsorship-add">
 
-            <h1>{% trans 'Sponsor' %} {{ event.title }}</h1>
+            <h1>{% trans 'Sponsor ' %} {{ event.title }}</h1>
 
             <p>
                 Complete the form below to sponsor an event. <br>
@@ -28,11 +28,11 @@
                     <ul>
                         {% for field in form %}
                             {% if field.errors %}
-                                <li><a href="javascript:;">{{ field.label_tag }}</a></li>
+                                <li><a href="#{{ field.id_for_label }}">{{ field.label }}</a></li>
                             {% endif %}
                         {% endfor %}
                         {% if captcha_form.captcha.errors %}
-                            <li><a href="javascript:;">{% trans 'Captcha' %}</a></li>
+                            <li>{% trans 'Captcha' %}</li>
                         {% endif %}
                     </ul>
                 </div>
@@ -63,9 +63,44 @@
 
                 <ul class="list-unstyled">
                     {% for level in sponsorship_levels %}
-                        <li><strong>{{ level.name }} - ${{ level.amount }}: </strong> {{ level.description }}</li>
+                        {% if level.uses_fix_amount %}
+                            <li>
+                                <strong>{{ level.name }} : ${{ level.fix_amount }} </strong>
+                                {{ level.description }}
+                            </li>
+                        {% else %}
+                            <li>
+                                <strong>{{ level.name }} : ${{ level.min_amount }} - ${{ level.max_amount }} </strong>
+                                {{ level.description }}
+                            </li>
+                        {% endif %}
+
                     {% endfor %}
                 </ul>
+
+                {% with form.sponsorship_amount as field %}
+                    <div class="form-group row {% if field.errors %}has-danger{% endif %}">
+                        <label class="col-md-3 form-control-label" for="{{ field.id_for_label }}">
+                            {% if field.field.required %}
+                                <em class="body-copy-alert">*</em> {% endif %} {{ field.label }}
+                        </label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <div class="input-group-addon">$</div>
+                                {% render_field field class="form-control" type="text" %}
+                            </div>
+                            {% if field.errors %}
+                                {% for field_error in field.errors %}
+                                    <span id="{{ field.id_for_label }}-help-block"
+                                          class="help-block has-danger">{{ field_error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                            {% if field.help_text %}
+                                <span class="help-block">{{ field.help_text }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endwith %}
                 <hr>
                 {% render_field form.event %}
 

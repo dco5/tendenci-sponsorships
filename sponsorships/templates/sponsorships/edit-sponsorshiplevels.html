@@ -70,6 +70,9 @@
                                                         <label>
                                                             {{ field }} {{ field.label }}
                                                         </label>
+                                                        {% if field.help_text %}
+                                                            <span class="help-block">{{ field.help_text }}</span>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </div>

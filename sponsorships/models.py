@@ -11,8 +11,14 @@ class SponsorshipLevel(models.Model):
     event = models.ForeignKey(Event, related_name='sponsorship_levels')
     name = models.CharField(max_length=250)
     description = models.TextField(blank=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
     limit = models.IntegerField(default=1)
+
+    uses_fix_amount = models.BooleanField(default=False)
+
+    fix_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    max_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    min_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     class Meta:
         app_label = 'sponsorships'

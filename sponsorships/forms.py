@@ -60,6 +60,8 @@ class SponsorshipLevelForm(forms.ModelForm):
                 self.add_error('min_amount', "Min amount cannot be greater than Max amount.")
                 raise forms.ValidationError("Error with min and max amounts")
 
+        return clean_data
+
 
 class SponsorshipAdminForm(forms.ModelForm):
     # get the payment_method choices from settings
@@ -242,6 +244,7 @@ class SponsorshipForm(forms.ModelForm):
                                    level.name,
                                    level.min_amount,
                                    level.max_amount))
+        return clean_data
 
     def save(self, commit=False):
         sponsorship = super(SponsorshipForm, self).save(commit)

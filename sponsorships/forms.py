@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
-from sponsorships.models import Sponsorship, SponsorshipLevel
+from sponsorships.models import Sponsorship, SponsorshipLevel, NotifyEventAdmin
 from sponsorships.utils import get_allocation_choices, get_payment_method_choices, get_preset_amount_choices, \
     get_initial_choice
 from tendenci.apps.events.models import Event
@@ -10,6 +10,16 @@ from tendenci.apps.site_settings.utils import get_setting
 from django.forms.fields import Field
 
 setattr(Field, 'is_checkbox', lambda self: isinstance(self.widget, forms.CheckboxInput))
+
+class NotifyEventAdminForm(forms.ModelForm):
+    class Meta:
+        model = NotifyEventAdmin
+        fields = ('notify_emails','event')
+    
+    def __init__(self, *args, **kwargs):
+        super(NotifyEventAdminForm, self).__init__(*args,**kwargs)
+        self.fields['event'].widget = forms.HiddenInput()
+
 
 
 class SponsorshipLevelForm(forms.ModelForm):
@@ -23,8 +33,8 @@ class SponsorshipLevelForm(forms.ModelForm):
                   'max_amount',
                   'limit')
 
-    def __init__(self, *arg, **kwargs):
-        super(SponsorshipLevelForm, self).__init__(*arg, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(SponsorshipLevelForm, self).__init__(*args, **kwargs)
 
         self.fields['uses_fix_amount'].help_text = 'Select this if sponsorship level will only use a set amount.'
 

@@ -18,7 +18,7 @@
 {% block content %}
     <div class="t">
         <h1>{% firstof MODULE_EVENTS_LABEL trans 'Event' %}{% trans " Edit" %}</h1>
-
+    
         <div class="event-tabs">
             <ul class="nav nav-tabs">
                 <li role="presentation" class="dropdown {% if label == 'overview' %}active{% endif %}">
@@ -45,13 +45,61 @@
             </ul>
         </div>
 
+
+        
         <div class="event-wrap">
+            
             <form id="event-form" class="form-horizontal" action="." method="post"
                   enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="forms">
                     <fieldset>
                         <legend>Sponsorship Levels</legend>
+                        <br>
+                        {% for field in notify %}
+                            {% if field.is_hidden %}
+                                {{ field }}
+                            {% elif field.field.is_checkbox %}
+
+                                <div class="form-group">
+                                    <div class="col-md-9">
+                                        <div class="checkbox">
+                                            <label>
+                                                {{ field }} {{ field.label }}
+                                            </label>
+                                            {% if field.help_text %}
+                                                <span class="help-block">{{ field.help_text }}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            {% else %}
+                                <div class="form-group row {% if field.errors %}has-danger{% endif %}">
+                                    <label class="col-md-3 form-control-label"
+                                            for="{{ field.id_for_label }}">
+                                        {{ field.label }} {% if field.field.required %} * {% endif %}
+                                    </label>
+                                    <div class="col-md-9">
+                                        {% render_field field class="form-control" %}
+                                        {% if field.errors %}
+                                            {% for field_error in field.errors %}
+                                                <span id="{{ field.id_for_label }}-help-block"
+                                                        class="help-block has-danger">{{ field_error }}</span>
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% if field.help_text %}
+                                            <span class="help-block">{{ field.help_text }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <p>Input the list of emails that will be notified on this event. List of eamils must be separate by <b>","</b>. 
+                            <br><b> Example:</b> mail1@mail.com, mail2@mail.com, mail3@mail.com, ....
+                        </p>
+                        <hr>
+
                         <div id="sponsorship-levels">
                             {{ formset.management_form }}
 

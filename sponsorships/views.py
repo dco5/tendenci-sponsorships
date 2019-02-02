@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from sponsorships.forms import SponsorshipForm, SponsorshipLevelForm, SponsorshipLevelFormSet
+from sponsorships.forms import SponsorshipForm, SponsorshipLevelForm, SponsorshipLevelFormSet, NotifyEventAdminForm
 from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user, sponsorship_event_add
 from sponsorships.models import Sponsorship
 from tendenci.apps.events.models import Event
@@ -203,15 +203,24 @@ def edit_sponsorship_level(request, event_id):
 
     if request.method == 'POST':
         sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)
+
+        # Validate emails
+
         if sponsorship_level_formset.is_valid():
             sponsorship_level_formset.save()
 
             return redirect(event.get_absolute_url())
+
+
+       
+
     else:
         sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)
-
+        notify = NotifyEventAdminForm(initial={'event':event})
+    
     return render(request, "sponsorships/edit-sponsorshiplevels.html", {
         'event': event,
+        'notify': notify,
         'formset': sponsorship_level_formset,
         'label': 'sponsorship'
     })

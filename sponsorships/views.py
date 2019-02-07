@@ -19,6 +19,9 @@ from tendenci.apps.perms.utils import has_perm
 from tendenci.apps.base.utils import get_unique_username
 from tendenci.apps.profiles.models import Profile
 
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+
 try:
     from tendenci.apps.notifications import models as notification
 except:
@@ -204,15 +207,23 @@ def edit_sponsorship_level(request, event_id):
     if request.method == 'POST':
         sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)
 
-        # Validate emails
+        # Validate emails for notification        
+        notify_mails = NotifyEventAdminForm(request.POST)
+        mails = NotifyEventAdminForm(request.POST.get('notify_emails',''))
+        mails = mails.data.split(",")
+        for mail in mails:
+            print(mail.strip())
+            try:
+                validate_email(mail.strip())
+                notify_mails.save()
+            except ValidationError as e:
+                print "oops! Wrong email"
+            
 
         if sponsorship_level_formset.is_valid():
             sponsorship_level_formset.save()
 
             return redirect(event.get_absolute_url())
-
-
-       
 
     else:
         sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)

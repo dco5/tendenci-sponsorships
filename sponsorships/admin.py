@@ -1,5 +1,5 @@
 from django.contrib import admin
-from sponsorships.models import Sponsorship
+from sponsorships.models import Sponsorship, NotifyEventAdmin   
 from tendenci.apps.donations.forms import DonationAdminForm
 
 
@@ -9,3 +9,4 @@ class SponsorshipAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Sponsorship, SponsorshipAdmin)
+admin.site.register(NotifyEventAdmin)

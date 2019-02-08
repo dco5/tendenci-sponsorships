@@ -6,7 +6,8 @@ from django.shortcuts import render_to_response, get_object_or_404, render, redi
 from django.contrib.auth.models import User
 from sponsorships.forms import SponsorshipForm, SponsorshipLevelForm, SponsorshipLevelFormSet, NotifyEventAdminForm
 from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user, sponsorship_event_add
-from sponsorships.models import Sponsorship
+from sponsorships.models import Sponsorship, NotifyEventAdmin
+
 from tendenci.apps.events.models import Event
 from tendenci.apps.perms.decorators import is_enabled
 from tendenci.apps.site_settings.utils import get_setting
@@ -200,7 +201,7 @@ def search(request, template_name="sponsorships/search.html"):
 @login_required
 def edit_sponsorship_level(request, event_id):
     event = get_object_or_404(Event, pk=event_id)
-
+    print(event)
     if not has_perm(request.user, 'events.change_event', event):
         raise Http403
 
@@ -208,26 +209,35 @@ def edit_sponsorship_level(request, event_id):
         sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)
 
         # Validate emails for notification        
-        notify_mails = NotifyEventAdminForm(request.POST)
-        mails = NotifyEventAdminForm(request.POST.get('notify_emails',''))
-        mails = mails.data.split(",")
-        for mail in mails:
-            print(mail.strip())
-            try:
-                validate_email(mail.strip())
-                notify_mails.save()
-            except ValidationError as e:
-                print "oops! Wrong email"
+        notify_mails_form = NotifyEventAdminForm(request.POST, instance=event)
+        # mails = NotifyEventAdminForm(request.POST.get('notify_emails',''))
+        # mails = mails.data.split(",")
+        # for mail in mails:
+        #     print(mail.strip())
+        #     try:
+        #         validate_email(mail.strip())
+        #         notify_mails_form.save()
+        #     except ValidationError as e:
+        #         print "oops! Wrong email"
             
+        print(notify_mails_form.is_valid())
+        # if notify_mails_form.is_valid():
+        #     notify_mails_form.save()
 
-        if sponsorship_level_formset.is_valid():
+        if sponsorship_level_formset.is_valid() and notify_mails_form.is_valid():
             sponsorship_level_formset.save()
+            notify_mails_form.save()
 
             return redirect(event.get_absolute_url())
 
     else:
         sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)
-        notify = NotifyEventAdminForm(initial={'event':event})
+        event_exists = NotifyEventAdmin.objects.get("event" = event)
+                                        
+        # if not event_exists:
+        #     notify = NotifyEventAdminForm(initial={'event':event})
+        # else:
+        #     notify = NotifyEventAdminForm(instance=event)
     
     return render(request, "sponsorships/edit-sponsorshiplevels.html", {
         'event': event,

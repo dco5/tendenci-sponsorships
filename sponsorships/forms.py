@@ -24,21 +24,24 @@ class NotifyEventAdminForm(forms.ModelForm):
         self.fields['notify_emails'].help_text = 'Input the list of emails that will be notified on this event. List of eamils must be separate by ",". ' \
                                                 ' Example: email1@mail.com, email2@mail.com, email3@mail.com, ....'
 
-    def clean(self):
-        clean_data = super(NotifyEventAdminForm, self).clean()
-        emails = self.clean_data.get('notify_emails')
-        if not emails:
+    def clean_notify_emails(self):
+        # clean_data = super(NotifyEventAdminForm, self).clean()
+        clean_data = self.cleaned_data['notify_emails']
+        
+        if not clean_data:
             self.add_error("Notify emails", 'Emails are needed in this field.')
             raise forms.ValidationError("Error in Emails field!")
         else: 
+            emails = clean_data.split(',')
             for email in emails:
-                email = emails.split(',')
+                print(email)
+                email = email.strip()
                 print(email)
                 try:
-                    validate_email(email.strip())      
+                    validate_email(email)      
                 except:
                     self.add_error("Emails List", 'One or more emails in the list are wrong ')
-                    raise forms.ValidationError("Error in Notify Emails field!")
+                    raise forms.ValidationError("One or more emails in the list are wrong!")
 
         return clean_data
 

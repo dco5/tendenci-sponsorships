@@ -207,26 +207,22 @@ def edit_sponsorship_level(request, event_id):
 
     if request.method == 'POST':
         sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)      
-        notify_mails_form = NotifyEventAdminForm(request.POST, instance=event)
+        notify_mails_form = NotifyEventAdminForm(request.POST)
       
-        # if sponsorship_level_formset.is_valid() and notify_mails_form.is_valid():
-
-        if sponsorship_level_formset.is_valid():    
+        if sponsorship_level_formset.is_valid() and notify_mails_form.is_valid():
             sponsorship_level_formset.save()
             notify_mails_form.save()
 
             return redirect(event.get_absolute_url())
 
     else:
-        sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)
-        # event_exists = NotifyEventAdmin.objects.get("event" = event)
-        notify = NotifyEventAdminForm(initial={'event':event})   
-
-
-        # if not event_exists:
-        #     notify = NotifyEventAdminForm(initial={'event':event})
-        # else:
-        #     notify = NotifyEventAdminForm(instance=event)
+        sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)  
+        notify = NotifyEventAdminForm(instance=event)
+        
+        if not notify:
+            notify = NotifyEventAdminForm(initial={'event':event})
+        else:
+            notify = NotifyEventAdminForm(instance=event, initial={'event':event})
     
     return render(request, "sponsorships/edit-sponsorshiplevels.html", {
         'event': event,

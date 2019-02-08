@@ -206,25 +206,12 @@ def edit_sponsorship_level(request, event_id):
         raise Http403
 
     if request.method == 'POST':
-        sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)
-
-        # Validate emails for notification        
+        sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)      
         notify_mails_form = NotifyEventAdminForm(request.POST, instance=event)
-        # mails = NotifyEventAdminForm(request.POST.get('notify_emails',''))
-        # mails = mails.data.split(",")
-        # for mail in mails:
-        #     print(mail.strip())
-        #     try:
-        #         validate_email(mail.strip())
-        #         notify_mails_form.save()
-        #     except ValidationError as e:
-        #         print "oops! Wrong email"
-            
-        print(notify_mails_form.is_valid())
-        # if notify_mails_form.is_valid():
-        #     notify_mails_form.save()
+      
+        # if sponsorship_level_formset.is_valid() and notify_mails_form.is_valid():
 
-        if sponsorship_level_formset.is_valid() and notify_mails_form.is_valid():
+        if sponsorship_level_formset.is_valid():    
             sponsorship_level_formset.save()
             notify_mails_form.save()
 
@@ -232,8 +219,10 @@ def edit_sponsorship_level(request, event_id):
 
     else:
         sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)
-        event_exists = NotifyEventAdmin.objects.get("event" = event)
-                                        
+        # event_exists = NotifyEventAdmin.objects.get("event" = event)
+        notify = NotifyEventAdminForm(initial={'event':event})   
+
+
         # if not event_exists:
         #     notify = NotifyEventAdminForm(initial={'event':event})
         # else:

@@ -34,9 +34,7 @@ class NotifyEventAdminForm(forms.ModelForm):
         else: 
             emails = clean_data.split(',')
             for email in emails:
-                print(email)
                 email = email.strip()
-                print(email)
                 try:
                     validate_email(email)      
                 except:

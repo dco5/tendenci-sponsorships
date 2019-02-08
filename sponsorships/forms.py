@@ -8,6 +8,8 @@ from tendenci.apps.events.models import Event
 from tendenci.apps.site_settings.utils import get_setting
 
 from django.forms.fields import Field
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 setattr(Field, 'is_checkbox', lambda self: isinstance(self.widget, forms.CheckboxInput))
 
@@ -19,7 +21,26 @@ class NotifyEventAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(NotifyEventAdminForm, self).__init__(*args,**kwargs)
         self.fields['event'].widget = forms.HiddenInput()
+        self.fields['notify_emails'].help_text = 'Input the list of emails that will be notified on this event. List of eamils must be separate by ",". ' \
+                                                ' Example: email1@mail.com, email2@mail.com, email3@mail.com, ....'
 
+    def clean(self):
+        clean_data = super(NotifyEventAdminForm, self).clean()
+        emails = self.clean_data.get('notify_emails')
+        if not emails:
+            self.add_error("Notify emails", 'Emails are needed in this field.')
+            raise forms.ValidationError("Error in Emails field!")
+        else: 
+            for email in emails:
+                email = emails.split(',')
+                print(email)
+                try:
+                    validate_email(email.strip())      
+                except:
+                    self.add_error("Emails List", 'One or more emails in the list are wrong ')
+                    raise forms.ValidationError("Error in Notify Emails field!")
+
+        return clean_data
 
 
 class SponsorshipLevelForm(forms.ModelForm):

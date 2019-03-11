@@ -6,9 +6,18 @@ from tendenci.apps.invoices.models import Invoice
 from sponsorships.managers import SponsorshipManager
 from tendenci.apps.events.models import Event
 
-class NotifyEventAdmin(models.Model):
+
+class NotifyEventSponsorshipAdmin(models.Model):
     notify_emails = models.CharField(max_length=250)
-    event = models.ForeignKey(Event, related_name='sponsor_levels')
+    event = models.ForeignKey(Event, related_name='notification_emails')
+
+    class Meta:
+        verbose_name = 'Sponsorship Notification Emails'
+        verbose_name_plural = 'Sponsorship Notification Emails'
+
+    def get_email(self):
+        return self.notify_emails.replace(' ', '').split(',')
+
 
 class SponsorshipLevel(models.Model):
     event = models.ForeignKey(Event, related_name='sponsorship_levels')

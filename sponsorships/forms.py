@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.utils.translation import ugettext_lazy as _
-from sponsorships.models import Sponsorship, SponsorshipLevel, NotifyEventAdmin
+from sponsorships.models import Sponsorship, SponsorshipLevel, NotifyEventSponsorshipAdmin
 from sponsorships.utils import get_allocation_choices, get_payment_method_choices, get_preset_amount_choices, \
     get_initial_choice
 from tendenci.apps.events.models import Event
@@ -13,33 +13,34 @@ from django.core.validators import validate_email
 
 setattr(Field, 'is_checkbox', lambda self: isinstance(self.widget, forms.CheckboxInput))
 
+
 class NotifyEventAdminForm(forms.ModelForm):
     class Meta:
-        model = NotifyEventAdmin
-        fields = ('notify_emails','event')
-    
+        model = NotifyEventSponsorshipAdmin
+        fields = ('notify_emails', 'event')
+
     def __init__(self, *args, **kwargs):
-        super(NotifyEventAdminForm, self).__init__(*args,**kwargs)
+        super(NotifyEventAdminForm, self).__init__(*args, **kwargs)
         self.fields['event'].widget = forms.HiddenInput()
-        self.fields['notify_emails'].help_text = 'Input the list of emails that will be notified on this event. List of eamils must be separate by ",". ' \
-                                                ' Example: email1@mail.com, email2@mail.com, email3@mail.com, ....'
+        self.fields[
+            'notify_emails'].help_text = 'Input the list of emails that will be notified on this event. List of eamils must be separate by comma. ' \
+                                         ' Example: email1@mail.com,email2@mail.com,email3@mail.com'
 
     def clean_notify_emails(self):
-        # clean_data = super(NotifyEventAdminForm, self).clean()
         clean_data = self.cleaned_data['notify_emails']
-        
+
         if not clean_data:
             self.add_error("Notify emails", 'Emails are needed in this field.')
             raise forms.ValidationError("Error in Emails field!")
-        else: 
+        else:
             emails = clean_data.split(',')
             for email in emails:
                 email = email.strip()
                 try:
-                    validate_email(email)      
+                    validate_email(email)
                 except:
-                    self.add_error("Emails List", 'One or more emails in the list are wrong ')
-                    raise forms.ValidationError("One or more emails in the list are wrong!")
+                    self.add_error("Emails List", 'One or more emails in the list is wrong. ')
+                    raise forms.ValidationError("One or more emails in the list are wrong.")
 
         return clean_data
 

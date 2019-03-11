@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response, get_object_or_404, render, redi
 from django.contrib.auth.models import User
 from sponsorships.forms import SponsorshipForm, SponsorshipLevelForm, SponsorshipLevelFormSet, NotifyEventAdminForm
 from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user, sponsorship_event_add
-from sponsorships.models import Sponsorship, NotifyEventAdmin
+from sponsorships.models import Sponsorship, NotifyEventSponsorshipAdmin
 
 from tendenci.apps.events.models import Event
 from tendenci.apps.perms.decorators import is_enabled
@@ -206,27 +206,27 @@ def edit_sponsorship_level(request, event_id):
         raise Http403
 
     if request.method == 'POST':
-        sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)      
-        notify_mails_form = NotifyEventAdminForm(request.POST)
-      
-        if sponsorship_level_formset.is_valid() and notify_mails_form.is_valid():
+        sponsorship_level_formset = SponsorshipLevelFormSet(request.POST, instance=event)
+        notify_emails = event.notification_emails.first()
+        notify_emails_form = NotifyEventAdminForm(request.POST, instance=notify_emails)
+
+        if sponsorship_level_formset.is_valid() and notify_emails_form.is_valid():
             sponsorship_level_formset.save()
-            notify_mails_form.save()
+            notify_emails_form.save()
 
             return redirect(event.get_absolute_url())
 
+    sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)
+    notify_event_emails = event.notification_emails.first()
+
+    if not notify_event_emails:
+        notify_emails_form = NotifyEventAdminForm(initial={'event': event})
     else:
-        sponsorship_level_formset = SponsorshipLevelFormSet(instance=event)  
-        notify = NotifyEventAdminForm(instance=event)
-        
-        if not notify:
-            notify = NotifyEventAdminForm(initial={'event':event})
-        else:
-            notify = NotifyEventAdminForm(instance=event, initial={'event':event})
-    
+        notify_emails_form = NotifyEventAdminForm(instance=notify_event_emails)
+
     return render(request, "sponsorships/edit-sponsorshiplevels.html", {
         'event': event,
-        'notify': notify,
+        'notify': notify_emails_form,
         'formset': sponsorship_level_formset,
         'label': 'sponsorship'
     })
@@ -245,7 +245,7 @@ def event_sponsors(request, event_id):
             total += sponsor.sponsorship_amount
             total_sponsors += 1
 
-    return render(request,'sponsorships/event_sponsors.html',
+    return render(request, 'sponsorships/event_sponsors.html',
                   {
                       'sponsors': sponsors,
                       'event': event,

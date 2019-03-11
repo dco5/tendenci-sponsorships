@@ -1,0 +1,3 @@
+{% load i18n %}
+
+{% blocktrans with object.id as objid and object.amount as objamount and object.invoice.id as objinv %}New Sponsorship, amount: {{ objamount }}) for invoice (ID: {{ objinv }}){% endblocktrans %}

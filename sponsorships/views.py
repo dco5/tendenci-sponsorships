@@ -109,6 +109,7 @@ def add(request, id=None, form_class=SponsorshipForm, template_name="sponsorship
             if not sponsorship.payment_method.lower() in ['cc', 'credit card', 'paypal']:
                 # email to admin (if payment type is credit card email is not sent until payment confirmed)
                 recipients = get_notice_recipients('module', 'sponsorships', 'sponsorshipsrecipients')
+
                 if recipients:
                     if notification:
                         extra_context = {

@@ -15,7 +15,7 @@ class NotifyEventSponsorshipAdmin(models.Model):
         verbose_name = 'Sponsorship Notification Emails'
         verbose_name_plural = 'Sponsorship Notification Emails'
 
-    def get_email(self):
+    def get_emails(self):
         return self.notify_emails.replace(' ', '').split(',')
 
 
@@ -141,11 +141,19 @@ class Sponsorship(models.Model):
         from tendenci.apps.perms.utils import get_notice_recipients
 
         recipients = get_notice_recipients('module', 'sponsorships', 'sponsorshiprecipients')
+
+        # Get recipients for sponsorship chairman
+        event_chairman_emails = self.event.notification_emails.first()
+
+        if event_chairman_emails:
+            event_chairman_emails = event_chairman_emails.get_emails()
+            recipients += event_chairman_emails
+
         if recipients:
             if notification:
                 extra_context = {
-                    'sponsorships': self,
-                    'invoice': payment.invoice,
+                    'sponsorship': self,
+                    'object': payment,
                     'request': request,
                 }
-                notification.send_emails(recipients, 'sponsorships', extra_context)
+                notification.send_emails(recipients, 'sponsorship_added', extra_context)

@@ -12,6 +12,7 @@ class NotifyEventSponsorshipAdmin(models.Model):
     event = models.ForeignKey(Event, related_name='notification_emails')
 
     class Meta:
+        app_label = 'sponsorships'
         verbose_name = 'Sponsorship Notification Emails'
         verbose_name_plural = 'Sponsorship Notification Emails'
 

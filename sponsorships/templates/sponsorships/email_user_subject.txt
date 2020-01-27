@@ -1,1 +1,1 @@
-{{ SITE_GLOBAL_SITEDISPLAYNAME }} - Thank you for been a Sponsor!
+{{ SITE_GLOBAL_SITEDISPLAYNAME }} - Thank you for being a Sponsor!

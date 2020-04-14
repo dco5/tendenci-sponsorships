@@ -81,6 +81,18 @@
         <td width="23%"> {% trans "Sponsorhip Event:" %}</td>
         <td width="75%">{{ sponsorship.event.title }}</td>
     </tr>
+
+    <tr>
+        <td width="2%">&nbsp;</td>
+        <td width="23%"> {% trans "Referred By:" %}</td>
+        <td width="75%">{{ sponsorship.referral_source|default_if_none:"None" }}</td>
+    </tr>
+
+    <tr>
+        <td width="2%">&nbsp;</td>
+        <td width="23%"> {% trans "Comments:" %}</td>
+        <td width="75%">{{ sponsorship.comments|default_if_none:"None" }}</td>
+    </tr>
 </table>
 
 <P>{% trans "Time submitted:" %} {% now "D d M Y P" %}</P>

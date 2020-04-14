@@ -85,6 +85,9 @@ class Sponsorship(models.Model):
     class Meta:
         app_label = 'sponsorships'
 
+    def __unicode__(self):
+        return self.event.title
+
     def save(self, user=None, *args, **kwargs):
         if not self.id:
             self.guid = str(uuid.uuid1())

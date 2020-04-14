@@ -23,7 +23,7 @@ class NotifyEventAdminForm(forms.ModelForm):
         super(NotifyEventAdminForm, self).__init__(*args, **kwargs)
         self.fields['event'].widget = forms.HiddenInput()
         self.fields[
-            'notify_emails'].help_text = 'Input the list of emails that will be notified on this event. List of eamils must be separate by comma. ' \
+            'notify_emails'].help_text = 'Input the list of emails that will be notified on this event. List of emails must be separate by comma. ' \
                                          ' Example: email1@mail.com,email2@mail.com,email3@mail.com'
 
     def clean_notify_emails(self):

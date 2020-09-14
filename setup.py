@@ -9,7 +9,7 @@ setup(
     name='tendenci-sponsorships',
     author='Jaime Lossada',
     author_email='jlosada87@hotmail.com',
-    version='7.1.1',
+    version='7.1.2',
     license='GPL3',
     description='Sponsorships addon for Tendenci',
     long_description=longdesc,

@@ -4,9 +4,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, render, redirect
 from django.contrib.auth.models import User
-from sponsorships.forms import SponsorshipForm, SponsorshipLevelForm, SponsorshipLevelFormSet, NotifyEventAdminForm
-from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user, sponsorship_event_add
-from sponsorships.models import Sponsorship, NotifyEventSponsorshipAdmin
+from sponsorships.forms import SponsorshipForm, SponsorshipLevelFormSet, NotifyEventAdminForm
+from sponsorships.utils import sponsorship_inv_add, sponsorship_email_user
+from sponsorships.models import Sponsorship
 
 from tendenci.apps.events.models import Event
 from tendenci.apps.perms.decorators import is_enabled
@@ -19,9 +19,6 @@ from tendenci.apps.perms.utils import get_notice_recipients
 from tendenci.apps.perms.utils import has_perm
 from tendenci.apps.base.utils import get_unique_username
 from tendenci.apps.profiles.models import Profile
-
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
 
 try:
     from tendenci.apps.notifications import models as notification
